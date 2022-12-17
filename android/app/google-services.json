@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "858758258141",
+    "firebase_url": "https://mazadcar-60190-default-rtdb.firebaseio.com",
+    "project_id": "mazadcar-60190",
+    "storage_bucket": "mazadcar-60190.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858758258141:android:7660da2fb70886ad86aa34",
+        "android_client_info": {
+          "package_name": "com.example.mazadcar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "858758258141-hdqhj9puoc1n17ijb4t6a5qjqn4gskes.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvwMjLEs6JWICYllTmrdQMXYq8EDceo74"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "858758258141-hdqhj9puoc1n17ijb4t6a5qjqn4gskes.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858758258141:android:964112fb06bb187b86aa34",
+        "android_client_info": {
+          "package_name": "com.example.mazadcarapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "858758258141-hdqhj9puoc1n17ijb4t6a5qjqn4gskes.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvwMjLEs6JWICYllTmrdQMXYq8EDceo74"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "858758258141-hdqhj9puoc1n17ijb4t6a5qjqn4gskes.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
