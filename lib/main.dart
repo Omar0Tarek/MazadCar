@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/src/widgets/navigator.dart';
+import 'package:mazadcar/Screens/Common/profile.dart';
+import 'package:mazadcar/Screens/Seller/addCarImage.dart';
+import 'package:mazadcar/Screens/tabControllerScreen.dart';
+import 'package:mazadcar/providers/carProvider.dart';
+import 'package:provider/provider.dart';
 
-import 'Auth/AuthPage.dart';
-import 'Auth/HomePage.dart';
-import 'Auth/LoginPage.dart';
+import 'Screens/Auth/AuthPage.dart';
+import 'Screens/Auth/HomePage.dart';
+import 'Screens/Auth/LoginPage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,28 +27,30 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'MazadCar',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (ctx) => CarProvider()),
+        ],
+        child: MaterialApp(
+            navigatorKey: navigatorKey,
+            title: 'MazadCar',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            initialRoute: '/',
+            routes: {
+              '/': (dummyctx) => MyHomePage(
+                    title: 'Flutter Demo Home Page',
+                  ),
+              '/home': (dummyctx) => TabControllerScreen(),
+              '/addCarImage': (dummyctx) => AddCarImage(),
+              '/profile': (dummyctx) => Profile()
+            }));
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -65,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         else if (snapshot.hasError)
           return Center(child: Text("Something went wrong"));
         else if (snapshot.hasData)
-          return HomePage();
+          return TabControllerScreen();
         else
           return AuthPage();
       },
