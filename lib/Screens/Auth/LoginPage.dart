@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../main.dart';
+import 'Utils.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback onClickedSignUp;
@@ -43,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
           password: passwordController.text.trim());
     } on FirebaseException catch (e) {
       print(e.message);
+      Utils.showSnackbar(e.message);
     }
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
@@ -106,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
               TextButton(
                 onPressed: () {
                   //forgot password screen
+                  Navigator.of(context).pushNamed('/forgotPassword');
                 },
                 child: const Text(
                   'Forgot Password',

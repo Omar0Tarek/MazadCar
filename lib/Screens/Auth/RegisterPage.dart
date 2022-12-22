@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../main.dart';
+import 'Utils.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback onClickedSignIn;
@@ -58,6 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
       });
     } on FirebaseException catch (e) {
       print(e.message);
+      Utils.showSnackbar(e.message);
     }
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
@@ -107,7 +109,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     padding: const EdgeInsets.all(10),
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (phone) => phone == null || phone.length < 11
+                      validator: (phone) => phone == null || phone.length < 10
                           ? 'Enter a valid phone number '
                           : null,
                       controller: phoneController,
@@ -150,7 +152,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   Container(
                     padding: const EdgeInsets.all(10),
-                    child: TextField(
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (password) => password == null ||
+                              password != passwordController.text.trim()
+                          ? 'This password is different from the one mentioned above'
+                          : null,
+                      obscureText: true,
                       controller: confirmPasswordController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),

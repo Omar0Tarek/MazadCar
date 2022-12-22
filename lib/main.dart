@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/src/widgets/navigator.dart';
+import 'package:mazadcar/Screens/Auth/Utils.dart';
 import 'package:mazadcar/Screens/Common/profile.dart';
 import 'package:mazadcar/Screens/Seller/addCarImage.dart';
 import 'package:mazadcar/Screens/tabControllerScreen.dart';
@@ -10,6 +11,7 @@ import 'package:mazadcar/providers/carProvider.dart';
 import 'package:provider/provider.dart';
 
 import 'Screens/Auth/AuthPage.dart';
+import 'Screens/Auth/ForgotPassword.dart';
 import 'Screens/Auth/HomePage.dart';
 import 'Screens/Auth/LoginPage.dart';
 
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
             navigatorKey: navigatorKey,
+            scaffoldMessengerKey: Utils.messengerKey,
             title: 'MazadCar',
             theme: ThemeData(
               primarySwatch: Colors.blue,
@@ -44,7 +47,8 @@ class MyApp extends StatelessWidget {
                   ),
               '/home': (dummyctx) => TabControllerScreen(),
               '/addCarImage': (dummyctx) => AddCarImage(),
-              '/profile': (dummyctx) => Profile()
+              '/profile': (dummyctx) => Profile(),
+              '/forgotPassword': (dummyctx) => ForgotPassword(),
             }));
   }
 }
