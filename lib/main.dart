@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
               '/': (dummyctx) => MyHomePage(
                     title: 'Flutter Demo Home Page',
                   ),
-              '/home': (dummyctx) => TabControllerScreen(),
+              // '/home': (dummyctx) => TabControllerScreen(),
               '/addCarImage': (dummyctx) => AddCarImage(),
               '/profile': (dummyctx) => Profile(),
               '/forgotPassword': (dummyctx) => ForgotPassword(),
@@ -64,9 +64,27 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  var carProvider;
+  var carList;
+
+  @override
+  void initState() {
+    // var user = FirebaseAuth.instance.currentUser;
+    // var token;
+    // if (user != null) {
+    //   token = user.getIdToken(true);
+    // } else {
+    //   print("No token");
+    // }
+    var carProvider = Provider.of<CarProvider>(context, listen: false);
+    carProvider.fetchCarsFromServer();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    carProvider = Provider.of<CarProvider>(context, listen: true);
+    carList = carProvider.getAllCars;
     return Scaffold(
         body: StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
@@ -75,9 +93,10 @@ class _MyHomePageState extends State<MyHomePage> {
           return Center(child: CircularProgressIndicator());
         else if (snapshot.hasError)
           return Center(child: Text("Something went wrong"));
-        else if (snapshot.hasData)
-          return TabControllerScreen();
-        else
+        else if (snapshot.hasData) {
+          // Navigator.of(context).pushNamed('/home');
+          return TabControllerScreen(carList: carList);
+        } else
           return AuthPage();
       },
     ));

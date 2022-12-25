@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mazadcar/Models/car.dart';
 import 'package:mazadcar/Screens/Common/availableCars.dart';
 import 'package:mazadcar/screens/MainDrawer.dart';
 import 'package:mazadcar/screens/seller/SoldCars.dart';
@@ -13,14 +14,20 @@ import 'Common/Chat.dart';
 import 'Common/Saved.dart';
 
 class TabControllerScreen extends StatefulWidget {
-  const TabControllerScreen({super.key});
+  final List<Car> carList;
+  const TabControllerScreen({super.key, required this.carList});
 
   @override
-  State<TabControllerScreen> createState() => _TabControllerScreenState();
+  State<TabControllerScreen> createState() =>
+      _TabControllerScreenState(carList: carList);
 }
 
 class _TabControllerScreenState extends State<TabControllerScreen> {
-  final List<Widget> myPages = [AvailableCars(), SoldCars(), Saved(), Chat()];
+  List<Car> carList;
+  _TabControllerScreenState({required this.carList});
+
+  var carProvider;
+  List<Widget> myPages = [];
   // User? user;
   // Future<String>? token;
 
@@ -35,21 +42,28 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
     });
   }
 
-  // void init() {
-  //   var myProvider = Provider.of<CarProvider>(context, listen: false);
-  //   user = FirebaseAuth.instance.currentUser;
-  //   if (user != null) {
-  //     token = user?.getIdToken(true);
-  //   } else {
-  //     print("No token");
-  //   }
+  @override
+  void initState() {
+    // carProvider = Provider.of<CarProvider>(context, listen: false);
+    // carProvider.fetchCarsFromServer();
+    // print("hi");
+    // var user = FirebaseAuth.instance.currentUser;
+    //   if (user != null) {
+    //     token = user?.getIdToken(true);
+    //   } else {
+    //     print("No token");
+    //   }
 
-  //   // myProvider.fetchIdeasFromServer(authProvider.token);
-  //   super.initState();
-  // }
+    //   // myProvider.fetchIdeasFromServer(authProvider.token);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    myPages = [AvailableCars(carList: carList), SoldCars(), Saved(), Chat()];
+    // carProvider = Provider.of<CarProvider>(context, listen: true);
+    // carList = carProvider.getAllCars;
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black),

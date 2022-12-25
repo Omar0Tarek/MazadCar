@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mazadcar/Screens/tabControllerScreen.dart';
-import 'package:mazadcar/models/car.dart';
+import 'package:mazadcar/Models/car.dart';
 
 class CarProvider with ChangeNotifier {
   List<Car> _cars = [];
@@ -20,6 +20,7 @@ class CarProvider with ChangeNotifier {
       var response = await http.get(carsURL);
       var fetchedData = json.decode(response.body) as Map<String, dynamic>;
       _cars.clear();
+      print("fetched data");
       print(fetchedData);
       fetchedData.forEach((key, value) {
         _cars.add(
