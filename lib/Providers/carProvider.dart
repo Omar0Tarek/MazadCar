@@ -25,19 +25,24 @@ class CarProvider with ChangeNotifier {
       fetchedData.forEach((key, value) {
         _cars.add(
           Car(
-              id: key,
-              make: value['make'],
-              model: value['model'],
-              year: value['year'],
-              mileage: value['mileage'],
-              color: value['color'],
-              sellerId: value['sellerId'],
-              imageURL: value['imageURL'],
-              location: value['location'],
-              transmission: value['transmission'],
-              engine: value['engine'],
-              startPrice: value['startPrice'],
-              comments: value['comments']),
+            id: key,
+            name: value['name'],
+            make: value['make'],
+            model: value['model'],
+            year: value['year'],
+            mileage: value['mileage'],
+            color: value['color'],
+            sellerId: value['sellerId'],
+            imageURL: value['imageURL'],
+            location: value['location'],
+            transmission: value['transmission'],
+            engine: value['engine'],
+            startPrice: value['startPrice'],
+            comments: value['comments'],
+            bids: value['comments'],
+            startDate: value['startDate'],
+            endDate: value['endDate'],
+          ),
         );
       });
       print(_cars);
@@ -46,23 +51,29 @@ class CarProvider with ChangeNotifier {
   }
 
   Future<void> addCar(
-      String make,
-      String model,
-      String year,
-      int mileage,
-      String color,
-      String sellerId,
-      String imageURL,
-      String location,
-      String transmission,
-      String engine,
-      String startPrice,
-      String comments) {
+    String name,
+    String make,
+    String model,
+    String year,
+    int mileage,
+    String color,
+    String sellerId,
+    String imageURL,
+    String location,
+    String transmission,
+    String engine,
+    int startPrice,
+    String comments,
+    Map<String, int> bids,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
     final carsURL = Uri.parse(
         "https://mazadcar-60190-default-rtdb.firebaseio.com/cars.json");
     return http
         .post(carsURL,
             body: json.encode({
+              'name': name,
               'make': make,
               'model': model,
               'year': year,
@@ -77,19 +88,24 @@ class CarProvider with ChangeNotifier {
             }))
         .then((value) {
       _cars.add(Car(
-          id: json.decode(value.body)['name'],
-          make: make,
-          model: model,
-          year: year,
-          mileage: mileage,
-          color: color,
-          sellerId: sellerId,
-          imageURL: imageURL,
-          location: location,
-          transmission: transmission,
-          engine: engine,
-          startPrice: startPrice,
-          comments: comments));
+        id: json.decode(value.body)['name'],
+        name: name,
+        make: make,
+        model: model,
+        year: year,
+        mileage: mileage,
+        color: color,
+        sellerId: sellerId,
+        imageURL: imageURL,
+        location: location,
+        transmission: transmission,
+        engine: engine,
+        startPrice: startPrice,
+        comments: comments,
+        bids: bids,
+        startDate: startDate,
+        endDate: endDate,
+      ));
       notifyListeners();
     }).catchError((err) {
       throw err;
@@ -147,8 +163,10 @@ class CarProvider with ChangeNotifier {
       var fetchedData = json.decode(response.body) as Map<String, dynamic>;
       _cars.clear();
       fetchedData.forEach((key, value) {
-        _cars.add(Car(
+        _cars.add(
+          Car(
             id: key,
+            name: value['name'],
             make: value['make'],
             model: value['model'],
             year: value['year'],
@@ -160,7 +178,12 @@ class CarProvider with ChangeNotifier {
             transmission: value['transmission'],
             engine: value['engine'],
             startPrice: value['startPrice'],
-            comments: value['comments']));
+            comments: value['comments'],
+            bids: value['comments'],
+            startDate: value['startDate'],
+            endDate: value['endDate'],
+          ),
+        );
       });
       notifyListeners();
     } catch (err) {

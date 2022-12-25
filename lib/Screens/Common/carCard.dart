@@ -68,7 +68,7 @@ class _CarCardState extends State<CarCard> {
                     children: [
                       Container(
                           padding: EdgeInsets.only(top: 10),
-                          child: Text(widget.car.startPrice)),
+                          child: Text(widget.car.startPrice.toString())),
                       Container(
                           padding: EdgeInsets.only(top: 5),
                           child: Text("Start Price"))
