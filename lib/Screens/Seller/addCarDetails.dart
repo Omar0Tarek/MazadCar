@@ -66,6 +66,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                     .then((value) => print("Done"));
                 carsProvider
                     .addCar(
+                        "name", // Seller should provide car name
                         makeValue.text,
                         modelValue.text,
                         yearValue.text,
@@ -76,8 +77,11 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         locationValue.text,
                         transmissionValue.text,
                         engineValue.text,
-                        startPriceValue.text,
-                        commentsValue.text)
+                        int.parse(startPriceValue.text),
+                        commentsValue.text,
+                        Map(),
+                        DateTime.now(),
+                        DateTime.now().add(Duration(hours: 1)))
                     .catchError((err) {
                   return showDialog(
                       context: context,

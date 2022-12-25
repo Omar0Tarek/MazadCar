@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class Car {
   final String id;
 
@@ -23,22 +25,29 @@ class Car {
 
   final String comments; // to be turned into a list
 
-  Car(
-      {required this.id,
-      required this.name,
-      required this.make,
-      required this.model,
-      required this.color,
-      required this.year,
-      required this.mileage,
-      required this.transmission,
-      required this.engine,
-      required this.sellerId,
-      required this.startPrice,
-      required this.bids,
-      required this.startDate,
-      required this.endDate,
-      required this.location,
-      required this.imageURL,
-      required this.comments});
+  Car({
+    required this.id,
+    required this.name,
+    required this.make,
+    required this.model,
+    required this.color,
+    required this.year,
+    required this.mileage,
+    required this.transmission,
+    required this.engine,
+    required this.sellerId,
+    required this.startPrice,
+    required this.bids,
+    required this.startDate,
+    required this.endDate,
+    required this.location,
+    required this.imageURL,
+    required this.comments,
+  });
+
+  int getHighestBid() {
+    return bids.isEmpty
+        ? startPrice
+        : bids.values.reduce((value, element) => max(value, element));
+  }
 }
