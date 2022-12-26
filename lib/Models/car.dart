@@ -50,4 +50,16 @@ class Car {
         ? startPrice
         : bids.values.reduce((value, element) => max(value, element));
   }
+
+  String getCountDown() {
+    Duration diff = DateTime.now().difference(startDate);
+    if (diff.isNegative) {
+      diff = Duration.zero;
+    }
+
+    String countDown =
+        '${diff.inHours}:${diff.inMinutes - diff.inHours * 60}:${diff.inSeconds - diff.inMinutes * 60}';
+
+    return countDown;
+  }
 }

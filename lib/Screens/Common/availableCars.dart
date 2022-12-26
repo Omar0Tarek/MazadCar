@@ -35,9 +35,7 @@ class _AvailableCarsState extends State<AvailableCars> {
     // carList = carProvider.getAllCars;
     print("Car List");
     print(carList);
-    return GridView.count(
-      crossAxisCount: 1,
-      mainAxisSpacing: 30,
+    return ListView(
       children: carList.map((c) {
         return CarCard(car: c);
       }).toList(),

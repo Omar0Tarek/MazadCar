@@ -2,7 +2,7 @@ import '../Models/car.dart';
 
 var carList = [
   Car(
-    name: 'شيفروليه 2010',
+    name: 'Audi 2010',
     id: 'r1',
     model: 'V8',
     make: "BMW",
@@ -21,7 +21,7 @@ var carList = [
     startDate: DateTime.now().add(Duration(hours: 1)),
   ),
   Car(
-      name: 'شيفروليه 2018',
+      name: 'Audi 2018',
       id: 'r1',
       model: 'V8',
       make: "BMW",
