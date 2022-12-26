@@ -62,4 +62,28 @@ class Car {
 
     return countDown;
   }
+
+  static Car constructFromFirebase(Map<dynamic, dynamic> data) {
+    print("This is the data:");
+    print(data);
+    return Car(
+      id: data['id'] ?? "",
+      name: data['name'] ?? "",
+      make: data['make'] ?? "",
+      model: data['model'] ?? "",
+      year: data['year'] ?? "",
+      mileage: 0,
+      color: data['color'] ?? "",
+      sellerId: data['sellerId'] ?? "",
+      imageURL: 'https://carwow-uk-wp-3.imgix.net/Volvo-XC40-white-scaled.jpg',
+      location: data['location'] ?? "",
+      transmission: data['transmission'] ?? "",
+      engine: data['engine'] ?? "",
+      startPrice: 0,
+      comments: data['comments'] ?? "",
+      bids: Map(),
+      startDate: DateTime.now(),
+      endDate: DateTime.now(),
+    );
+  }
 }

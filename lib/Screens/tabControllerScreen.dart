@@ -9,24 +9,17 @@ import 'package:mazadcar/screens/MainDrawer.dart';
 import 'package:mazadcar/screens/seller/SoldCars.dart';
 import 'package:provider/provider.dart';
 
-import '../Providers/carProvider.dart';
 import 'Common/Chat.dart';
 import 'Common/Saved.dart';
 
 class TabControllerScreen extends StatefulWidget {
-  final List<Car> carList;
-  const TabControllerScreen({super.key, required this.carList});
+  const TabControllerScreen({super.key});
 
   @override
-  State<TabControllerScreen> createState() =>
-      _TabControllerScreenState(carList: carList);
+  State<TabControllerScreen> createState() => _TabControllerScreenState();
 }
 
 class _TabControllerScreenState extends State<TabControllerScreen> {
-  List<Car> carList;
-  _TabControllerScreenState({required this.carList});
-
-  var carProvider;
   List<Widget> myPages = [];
   // User? user;
   // Future<String>? token;
@@ -44,8 +37,6 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
 
   @override
   void initState() {
-    // carProvider = Provider.of<CarProvider>(context, listen: false);
-    // carProvider.fetchCarsFromServer();
     // print("hi");
     // var user = FirebaseAuth.instance.currentUser;
     //   if (user != null) {
@@ -54,15 +45,13 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
     //     print("No token");
     //   }
 
-    //   // myProvider.fetchIdeasFromServer(authProvider.token);
+    // myProvider.fetchIdeasFromServer(authProvider.token);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    myPages = [AvailableCars(carList: carList), SoldCars(), Saved(), Chat()];
-    // carProvider = Provider.of<CarProvider>(context, listen: true);
-    // carList = carProvider.getAllCars;
+    myPages = [AvailableCars(), SoldCars(), Saved(), Chat()];
 
     return Scaffold(
       appBar: AppBar(
