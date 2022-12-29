@@ -3,12 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mazadcar/Models/car.dart';
 import 'package:mazadcar/Screens/Common/availableCars.dart';
 import 'package:mazadcar/screens/MainDrawer.dart';
 import 'package:mazadcar/screens/seller/SoldCars.dart';
 import 'package:provider/provider.dart';
 
-import '../Providers/carProvider.dart';
 import 'Common/Chat.dart';
 import 'Common/Saved.dart';
 
@@ -20,7 +20,7 @@ class TabControllerScreen extends StatefulWidget {
 }
 
 class _TabControllerScreenState extends State<TabControllerScreen> {
-  final List<Widget> myPages = [AvailableCars(), SoldCars(), Saved(), Chat()];
+  List<Widget> myPages = [];
   // User? user;
   // Future<String>? token;
 
@@ -35,21 +35,24 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
     });
   }
 
-  // void init() {
-  //   var myProvider = Provider.of<CarProvider>(context, listen: false);
-  //   user = FirebaseAuth.instance.currentUser;
-  //   if (user != null) {
-  //     token = user?.getIdToken(true);
-  //   } else {
-  //     print("No token");
-  //   }
+  @override
+  void initState() {
+    // print("hi");
+    // var user = FirebaseAuth.instance.currentUser;
+    //   if (user != null) {
+    //     token = user?.getIdToken(true);
+    //   } else {
+    //     print("No token");
+    //   }
 
-  //   // myProvider.fetchIdeasFromServer(authProvider.token);
-  //   super.initState();
-  // }
+    // myProvider.fetchIdeasFromServer(authProvider.token);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    myPages = [AvailableCars(), SoldCars(), Saved(), Chat()];
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black),

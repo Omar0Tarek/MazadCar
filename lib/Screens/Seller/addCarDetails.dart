@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -9,8 +10,6 @@ import 'package:mazadcar/providers/storage.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as Path;
 import 'package:path_provider/path_provider.dart';
-
-import '../../providers/carProvider.dart';
 
 class AddCarDetails extends StatefulWidget {
   String imageName;
@@ -39,7 +38,6 @@ class _AddCarDetailsState extends State<AddCarDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final carsProvider = Provider.of<CarProvider>(context, listen: false);
     Storage storage = Storage();
 
     return Scaffold(
@@ -64,21 +62,24 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                 storage
                     .uploadImageToFirebase(widget.imagePath, widget.imageName)
                     .then((value) => print("Done"));
-                carsProvider
-                    .addCar(
-                        makeValue.text,
-                        modelValue.text,
-                        yearValue.text,
-                        int.parse(mileageValue.text),
-                        colorValue.text,
-                        sellerIdValue.text,
-                        widget.imageName,
-                        locationValue.text,
-                        transmissionValue.text,
-                        engineValue.text,
-                        startPriceValue.text,
-                        commentsValue.text)
-                    .catchError((err) {
+                FirebaseFirestore.instance.collection("cars").doc().set({
+                  'name': "name", // Seller should provide car name,
+                  'make': makeValue.text,
+                  'model': modelValue.text,
+                  'year': yearValue.text,
+                  'mileage': int.parse(mileageValue.text),
+                  'color': colorValue.text,
+                  'sellerId': sellerIdValue.text,
+                  'imageURL': widget.imageName,
+                  'location': locationValue.text,
+                  'transmission': transmissionValue.text,
+                  'engine': engineValue.text,
+                  'startPrice': int.parse(startPriceValue.text),
+                  'comments': commentsValue.text,
+                  'bids': Map(),
+                  'startDate': DateTime.now(),
+                  'endDate': DateTime.now().add(Duration(hours: 1)),
+                }).catchError((err) {
                   return showDialog(
                       context: context,
                       builder: ((ctx) {

@@ -1,9 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:mazadcar/Screens/Common/carCard.dart';
 
-import '../../Data/carList.dart';
+import '../../Models/car.dart';
 
 class AvailableCars extends StatefulWidget {
   const AvailableCars({super.key});
@@ -15,12 +15,26 @@ class AvailableCars extends StatefulWidget {
 class _AvailableCarsState extends State<AvailableCars> {
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 1,
-      mainAxisSpacing: 30,
-      children: carList.map((c) {
-        return CarCard(car: c);
-      }).toList(),
+    var carInstances = FirebaseFirestore.instance.collection("cars");
+    var myStream = carInstances.snapshots();
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: myStream,
+      builder: (ctx, strSnapshot) {
+        if (strSnapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        var carList = strSnapshot.data!.docs;
+        return ListView.builder(
+          itemBuilder: (itemCtx, index) {
+            Car car = Car.constructFromFirebase(carList[index].data() as Map);
+            return CarCard(car: car);
+          },
+          itemCount: carList.length,
+        );
+      },
     );
   }
 }

@@ -1,19 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/src/widgets/navigator.dart';
 import 'package:mazadcar/Screens/Auth/Utils.dart';
 import 'package:mazadcar/Screens/Common/profile.dart';
 import 'package:mazadcar/Screens/Seller/addCarImage.dart';
 import 'package:mazadcar/Screens/tabControllerScreen.dart';
-import 'package:mazadcar/providers/carProvider.dart';
 import 'package:provider/provider.dart';
 
 import 'Screens/Auth/AuthPage.dart';
 import 'Screens/Auth/ForgotPassword.dart';
-import 'Screens/Auth/HomePage.dart';
-import 'Screens/Auth/LoginPage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,27 +24,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (ctx) => CarProvider()),
-        ],
-        child: MaterialApp(
-            navigatorKey: navigatorKey,
-            scaffoldMessengerKey: Utils.messengerKey,
-            title: 'MazadCar',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: Utils.messengerKey,
+      title: 'MazadCar',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (dummyctx) => MyHomePage(
+              title: 'Flutter Demo Home Page',
             ),
-            initialRoute: '/',
-            routes: {
-              '/': (dummyctx) => MyHomePage(
-                    title: 'Flutter Demo Home Page',
-                  ),
-              '/home': (dummyctx) => TabControllerScreen(),
-              '/addCarImage': (dummyctx) => AddCarImage(),
-              '/profile': (dummyctx) => Profile(),
-              '/forgotPassword': (dummyctx) => ForgotPassword(),
-            }));
+        // '/home': (dummyctx) => TabControllerScreen(),
+        '/addCarImage': (dummyctx) => AddCarImage(),
+        '/profile': (dummyctx) => Profile(),
+        '/forgotPassword': (dummyctx) => ForgotPassword(),
+      },
+    );
   }
 }
 
@@ -75,9 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
           return Center(child: CircularProgressIndicator());
         else if (snapshot.hasError)
           return Center(child: Text("Something went wrong"));
-        else if (snapshot.hasData)
+        else if (snapshot.hasData) {
+          // Navigator.of(context).pushNamed('/home');
           return TabControllerScreen();
-        else
+        } else
           return AuthPage();
       },
     ));
