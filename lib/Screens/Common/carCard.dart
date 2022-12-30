@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mazadcar/Models/car.dart';
 
@@ -96,7 +98,7 @@ class _CarCardState extends State<CarCard> {
                     height: 160,
                     width: 130,
                     child: Image.network(
-                      widget.car.imageURL,
+                      jsonDecode(widget.car.imageURL)[0],
                       fit: BoxFit.cover,
                     ),
                   ),

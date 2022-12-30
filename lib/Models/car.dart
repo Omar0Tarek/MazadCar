@@ -21,7 +21,7 @@ class Car {
   final DateTime endDate;
 
   final String location;
-  final String imageURL; // to be turned into a list
+  String imageURL; // to be turned into a list
 
   final String comments; // to be turned into a list
 
@@ -63,23 +63,23 @@ class Car {
     return countDown;
   }
 
-  static Car constructFromFirebase(Map<dynamic, dynamic> data) {
+  static Car constructFromFirebase(Map<dynamic, dynamic> data, String id) {
     print("This is the data:");
     print(data);
     return Car(
-      id: data['id'] ?? "",
+      id: id,
       name: data['name'] ?? "",
       make: data['make'] ?? "",
       model: data['model'] ?? "",
       year: data['year'] ?? "",
-      mileage: 0,
+      mileage: data['mileage'],
       color: data['color'] ?? "",
       sellerId: data['sellerId'] ?? "",
-      imageURL: 'https://carwow-uk-wp-3.imgix.net/Volvo-XC40-white-scaled.jpg',
+      imageURL: data['imageURL'],
       location: data['location'] ?? "",
       transmission: data['transmission'] ?? "",
       engine: data['engine'] ?? "",
-      startPrice: 0,
+      startPrice: data['startPrice'],
       comments: data['comments'] ?? "",
       bids: Map(),
       startDate: DateTime.now(),
