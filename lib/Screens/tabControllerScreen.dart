@@ -62,6 +62,15 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
               Navigator.of(context).pushNamed('/profile');
             },
             icon: Icon(
+              Icons.filter_alt,
+              color: Colors.black,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/profile');
+            },
+            icon: Icon(
               Icons.person,
               color: Colors.black,
             ),
