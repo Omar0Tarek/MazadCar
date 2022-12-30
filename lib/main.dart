@@ -26,27 +26,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (ctx) => FilterProvider(),
-        child: MaterialApp(
-          navigatorKey: navigatorKey,
-          scaffoldMessengerKey: Utils.messengerKey,
-          title: 'MazadCar',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          initialRoute: '/',
-          routes: {
-            '/': (ctx) => MyHomePage(
-                  title: 'Flutter Demo Home Page',
-                ),
-            // '/home': (dummyctx) => TabControllerScreen(),
-            '/addCarImage': (ctx) => AddCarImage(),
-            '/profile': (ctx) => Profile(),
-            '/forgotPassword': (ctx) => ForgotPassword(),
-            '/filterCars': (ctx) => FilterScreen(),
-          },
-        ));
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: Utils.messengerKey,
+      title: 'MazadCar',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (dummyctx) => MyHomePage(
+              title: 'Flutter Demo Home Page',
+            ),
+        '/addCarImage': (dummyctx) => addCarImages(),
+        '/profile': (dummyctx) => Profile(),
+        '/forgotPassword': (dummyctx) => ForgotPassword(),
+        '/filterCars': (ctx) => FilterScreen(),
+      },
+    );
   }
 }
 
@@ -73,7 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
         else if (snapshot.hasError)
           return Center(child: Text("Something went wrong"));
         else if (snapshot.hasData) {
-          // Navigator.of(context).pushNamed('/home');
           return TabControllerScreen();
         } else
           return AuthPage();

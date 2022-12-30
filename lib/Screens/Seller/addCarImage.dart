@@ -1,41 +1,69 @@
+import 'dart:convert';
 import 'dart:io';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mazadcar/screens/seller/addCarDetails.dart';
-import 'package:path/path.dart' as Path;
-import 'package:firebase_storage/firebase_storage.dart';
 
-class AddCarImage extends StatefulWidget {
-  const AddCarImage({super.key});
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mazadcar/Models/car.dart';
+import 'package:mazadcar/Screens/Seller/addCarDetails.dart';
+import 'package:path/path.dart' as Path;
+
+class addCarImages extends StatefulWidget {
+  const addCarImages({super.key});
 
   @override
-  State<AddCarImage> createState() => _AddCarImageState();
+  State<addCarImages> createState() => _addCarImagesState();
 }
 
-class _AddCarImageState extends State<AddCarImage> {
-  XFile? _imageFile;
+class _addCarImagesState extends State<addCarImages> {
+  final ImagePicker imagePicker = ImagePicker();
+  List<XFile>? imageFileList = [];
+  List<dynamic> savedImages = [];
+  List<String> toBeDeleted = [];
+  List<String> displayedImages = [];
+  Car? extractedCar = null;
 
-  final ImagePicker picker = ImagePicker();
+  void selectImages(String source) async {
+    List<XFile>? selectedImages = [];
+    if (source == "Gallery") {
+      selectedImages = await imagePicker.pickMultiImage();
+    } else {
+      XFile? image = await imagePicker.pickImage(source: ImageSource.camera);
+      if (image != null) {
+        selectedImages.add(image);
+      }
+    }
 
-  Future getImage(ImageSource media) async {
-    var img = await picker.pickImage(source: media);
+    if (selectedImages.isNotEmpty) {
+      imageFileList!.addAll(selectedImages);
+    }
 
-    setState(() {
-      _imageFile = img;
-    });
+    setState(() {});
   }
 
-  void toCarDetails(BuildContext myContext) {
-    Navigator.of(myContext).push(MaterialPageRoute<void>(
-      builder: (BuildContext context) => AddCarDetails(
-        imagePath: _imageFile!.path,
-        imageName: _imageFile!.name,
-      ),
-    ));
+  Future<void> deleteImageFromFirebase(String imageFileUrl) async {
+    extractedCar = (ModalRoute.of(context)!.settings.arguments != null
+        ? (ModalRoute.of(context)!.settings.arguments
+            as Map<String, Object>)['Car']
+        : null) as Car?;
+
+    if (toBeDeleted.isNotEmpty) {
+      if (toBeDeleted.contains(imageFileUrl)) {
+        toBeDeleted.remove(imageFileUrl);
+      }
+    } else {
+      if (ModalRoute.of(context)!.settings.arguments != null) {
+        // savedImages = jsonDecode(extractedCar!.imageURL);
+        // savedImages.remove(imageFileUrl);
+        // extractedCar!.imageURL = jsonEncode(savedImages);
+
+        toBeDeleted.add(imageFileUrl);
+        print(toBeDeleted);
+      }
+    }
   }
 
   void myAlert() {
@@ -51,9 +79,12 @@ class _AddCarImageState extends State<AddCarImage> {
               child: Column(
                 children: [
                   ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll<Color>(Colors.black)),
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage(ImageSource.gallery);
+                      selectImages("Gallery");
                     },
                     child: Row(
                       children: [
@@ -63,9 +94,12 @@ class _AddCarImageState extends State<AddCarImage> {
                     ),
                   ),
                   ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll<Color>(Colors.black)),
                     onPressed: () {
                       Navigator.pop(context);
-                      getImage(ImageSource.camera);
+                      selectImages("Camera");
                     },
                     child: Row(
                       children: [
@@ -81,180 +115,197 @@ class _AddCarImageState extends State<AddCarImage> {
         });
   }
 
+  void toCarDetails(
+      BuildContext myContext, Car? extractedCar, List<String> tobeDeleted) {
+    if (extractedCar != null) {
+      print("toBeDeleted");
+      print(toBeDeleted);
+      Navigator.of(myContext).push(MaterialPageRoute<void>(
+        builder: (BuildContext context) => AddCarDetails(
+          images: imageFileList,
+          extractedCar: extractedCar,
+          toBeDeleted: toBeDeleted,
+        ),
+      ));
+    } else {
+      Navigator.of(myContext).push(MaterialPageRoute<void>(
+        builder: (BuildContext context) => AddCarDetails(images: imageFileList),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    extractedCar = (ModalRoute.of(context)!.settings.arguments != null
+        ? (ModalRoute.of(context)!.settings.arguments
+            as Map<String, Object>)['Car']
+        : null) as Car?;
+
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      savedImages = jsonDecode(extractedCar!.imageURL);
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(
-          color: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text('Multiple Images'),
         ),
-        backgroundColor: Colors.white,
-        title: Container(
-          margin: EdgeInsets.all(15),
-          padding: EdgeInsets.only(left: 10, bottom: 20, top: 10),
-          child: Image.asset(
-            'assets/images/logo.png',
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: _imageFile == null ? Colors.grey : Colors.black,
-          onPressed: () {
-            if (_imageFile != null) {
-              toCarDetails(context);
-            }
-          },
-          child: Icon(
-            Icons.arrow_circle_right_outlined,
-            color: Colors.white,
-          )),
-      body: Center(
-        child:
-            GridView.count(crossAxisCount: 1, mainAxisSpacing: 30, children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        floatingActionButton: FloatingActionButton(
+            backgroundColor: imageFileList!.isEmpty
+                ? savedImages.isEmpty
+                    ? Colors.grey
+                    : Colors.black
+                : Colors.black,
+            onPressed: () {
+              if (!imageFileList!.isEmpty || !savedImages!.isEmpty) {
+                if (extractedCar != null) {
+                  Navigator.of(context).push(MaterialPageRoute<void>(
+                    builder: (BuildContext context) => AddCarDetails(
+                      images: imageFileList,
+                      extractedCar: extractedCar,
+                      toBeDeleted: toBeDeleted,
+                    ),
+                  ));
+                } else {
+                  Navigator.of(context).push(MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        AddCarDetails(images: imageFileList),
+                  ));
+                }
+              }
+            },
+            child: Icon(
+              Icons.arrow_circle_right_outlined,
+              color: Colors.white,
+            )),
+        body: SafeArea(
+          child: Column(
             children: [
-              Card(
-                  child: Container(
-                // padding: EdgeInsets.all(20),
-                // margin: EdgeInsets.all(20),
-                child: _imageFile != null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.file(
-                            //to show image, you type like this.
-                            File(_imageFile!.path),
-                            fit: BoxFit.cover,
-                            width: MediaQuery.of(context).size.width,
-                            height: 300,
-                          ),
-                        ),
-                      )
-                    : Text(
-                        "No Image",
-                        style: TextStyle(fontSize: 20),
-                      ),
-              )),
               ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll<Color>(Colors.black)),
                 onPressed: () {
                   myAlert();
                 },
-                child: Text('Upload Photo'),
+                child: Text('Select Images'),
               ),
-              SizedBox(
-                height: 10,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GridView.builder(
+                      itemCount: imageFileList!.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4),
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: ((ctx) {
+                                  return AlertDialog(
+                                    title: Text("Delete Image"),
+                                    content: Text(
+                                        "Do you want to delete this image ?"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              imageFileList?.removeAt(index);
+                                            });
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text("Delete"))
+                                    ],
+                                  );
+                                }));
+                          },
+                          child: Image.file(
+                            File(imageFileList![index].path),
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      }),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GridView.builder(
+                      itemCount: savedImages.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4),
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: ((ctx) {
+                                  return AlertDialog(
+                                    title: toBeDeleted.isNotEmpty &&
+                                            toBeDeleted
+                                                .contains(savedImages[index])
+                                        ? Text("Undo Image Deletion")
+                                        : Text("Delete Image"),
+                                    content: toBeDeleted.isNotEmpty &&
+                                            toBeDeleted
+                                                .contains(savedImages[index])
+                                        ? Text(
+                                            "Do you want to undo this image deletion?")
+                                        : Text(
+                                            "Do you want to delete this image ?"),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              deleteImageFromFirebase(
+                                                  savedImages[index]);
+                                            });
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: toBeDeleted.isNotEmpty &&
+                                                  toBeDeleted.contains(
+                                                      savedImages[index])
+                                              ? Text("Undo")
+                                              : Text("Delete"))
+                                    ],
+                                  );
+                                }));
+                          },
+                          child: toBeDeleted.contains(savedImages[index])
+                              ? Stack(children: [
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          topRight: Radius.circular(15)),
+                                      child: Image.network(savedImages[index],
+                                          fit: BoxFit.cover)),
+                                  Positioned.fill(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          topRight: Radius.circular(15)),
+                                      child: Container(
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.close_sharp,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    bottom: 0,
+                                  )
+                                ])
+                              : Image.network(
+                                  savedImages[index],
+                                ),
+                        );
+                      }),
+                ),
               ),
             ],
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Card(
-                  child: Container(
-                child: _imageFile != null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.file(
-                            //to show image, you type like this.
-                            File(_imageFile!.path),
-                            fit: BoxFit.cover,
-                            width: MediaQuery.of(context).size.width,
-                            height: 300,
-                          ),
-                        ),
-                      )
-                    : Text(
-                        "No Image",
-                        style: TextStyle(fontSize: 20),
-                      ),
-              )),
-              ElevatedButton(
-                onPressed: () {
-                  myAlert();
-                },
-                child: Text('Upload Photo'),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Card(
-                  child: Container(
-                child: _imageFile != null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.file(
-                            //to show image, you type like this.
-                            File(_imageFile!.path),
-                            fit: BoxFit.cover,
-                            width: MediaQuery.of(context).size.width,
-                            height: 300,
-                          ),
-                        ),
-                      )
-                    : Text(
-                        "No Image",
-                        style: TextStyle(fontSize: 20),
-                      ),
-              )),
-              ElevatedButton(
-                onPressed: () {
-                  myAlert();
-                },
-                child: Text('Upload Photo'),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Card(
-                  child: Container(
-                child: _imageFile != null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.file(
-                            //to show image, you type like this.
-                            File(_imageFile!.path),
-                            fit: BoxFit.cover,
-                            width: MediaQuery.of(context).size.width,
-                            height: 300,
-                          ),
-                        ),
-                      )
-                    : Text(
-                        "Car  Image",
-                        style: TextStyle(fontSize: 20),
-                      ),
-              )),
-              ElevatedButton(
-                onPressed: () {
-                  myAlert();
-                },
-                child: Text('Upload Photo'),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          )
-        ]),
-      ),
-    );
+        ));
   }
 }

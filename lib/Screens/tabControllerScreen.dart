@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:mazadcar/Models/car.dart';
 import 'package:mazadcar/Screens/Common/availableCars.dart';
+import 'package:mazadcar/Screens/Common/myCars.dart';
 import 'package:mazadcar/screens/MainDrawer.dart';
 import 'package:mazadcar/screens/seller/SoldCars.dart';
 import 'package:provider/provider.dart';
@@ -21,12 +22,6 @@ class TabControllerScreen extends StatefulWidget {
 
 class _TabControllerScreenState extends State<TabControllerScreen> {
   List<Widget> myPages = [];
-  // User? user;
-  // Future<String>? token;
-
-  // Future<String>? get getToken {
-  //   return token;
-  // }
 
   var selectedTabIndex = 0;
   void switchPage(int index) {
@@ -37,21 +32,12 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
 
   @override
   void initState() {
-    // print("hi");
-    // var user = FirebaseAuth.instance.currentUser;
-    //   if (user != null) {
-    //     token = user?.getIdToken(true);
-    //   } else {
-    //     print("No token");
-    //   }
-
-    // myProvider.fetchIdeasFromServer(authProvider.token);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    myPages = [AvailableCars(), SoldCars(), Saved(), Chat()];
+    myPages = [AvailableCars(), MyCars(), Saved(), Chat()];
 
     return Scaffold(
       appBar: AppBar(
