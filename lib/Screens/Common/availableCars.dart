@@ -29,7 +29,8 @@ class _AvailableCarsState extends State<AvailableCars> {
         var carList = strSnapshot.data!.docs;
         return ListView.builder(
           itemBuilder: (itemCtx, index) {
-            Car car = Car.constructFromFirebase(carList[index].data() as Map);
+            Car car = Car.constructFromFirebase(
+                carList[index].data() as Map, carList[index].reference.id);
             return CarCard(car: car);
           },
           itemCount: carList.length,

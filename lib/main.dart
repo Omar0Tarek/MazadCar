@@ -36,8 +36,7 @@ class MyApp extends StatelessWidget {
         '/': (dummyctx) => MyHomePage(
               title: 'Flutter Demo Home Page',
             ),
-        // '/home': (dummyctx) => TabControllerScreen(),
-        '/addCarImage': (dummyctx) => AddCarImage(),
+        '/addCarImage': (dummyctx) => addCarImages(),
         '/profile': (dummyctx) => Profile(),
         '/forgotPassword': (dummyctx) => ForgotPassword(),
       },
@@ -68,7 +67,6 @@ class _MyHomePageState extends State<MyHomePage> {
         else if (snapshot.hasError)
           return Center(child: Text("Something went wrong"));
         else if (snapshot.hasData) {
-          // Navigator.of(context).pushNamed('/home');
           return TabControllerScreen();
         } else
           return AuthPage();
