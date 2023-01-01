@@ -20,10 +20,12 @@ class Car {
   final DateTime startDate;
   final DateTime endDate;
 
-  final String location;
+  final String location; // to be displayed
   String imageURL; // to be turned into a list
 
   final String comments; // to be turned into a list
+
+  // Add Description field
 
   Car({
     required this.id,
