@@ -16,10 +16,14 @@ class _CarCardState extends State<CarCard> {
 
   _CarCardState({required this.car});
 
+  void goToCarAdPage(BuildContext myContext) {
+    Navigator.of(myContext).pushNamed('/carAdPage', arguments: {'car': car});
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: null,
+      onTap: () => goToCarAdPage(context),
       child: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
