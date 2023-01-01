@@ -19,385 +19,225 @@ class _CarCardState extends State<CarCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: null,
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            boxShadow: null,
-          ),
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: Column(
-              //         crossAxisAlignment: CrossAxisAlignment.start,
-              //         children: [
-              //           Text(
-              //             'Claim ID',
-              //             style: TextStyle(
-              //               fontSize: 12,
-              //               fontWeight: FontWeight.w500,
-              //               color: Colors.grey,
-              //             ),
-              //           ),
-              //           Padding(
-              //             padding: const EdgeInsets.only(top: 4.0),
-              //             child: Text(
-              //               'widget.claimNumber',
-              //               style: const TextStyle(
-              //                 fontSize: 14,
-              //                 fontWeight: FontWeight.w600,
-              //               ),
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: 16,
-              //     ),
-              //     Expanded(
-              //       child: Column(
-              //         crossAxisAlignment: CrossAxisAlignment.start,
-              //         children: [
-              //           Text(
-              //             'Contract No.',
-              //             style: TextStyle(
-              //               fontSize: 12,
-              //               fontWeight: FontWeight.w500,
-              //               color: Colors.grey,
-              //             ),
-              //           ),
-              //           Padding(
-              //             padding: const EdgeInsets.only(top: 4.0),
-              //             child: Text(
-              //               'KP2207514735',
-              //               style: TextStyle(
-              //                 fontSize: 14,
-              //                 fontWeight: FontWeight.w600,
-              //               ),
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              Divider(
-                color: Colors.black,
-                height: 5,
-                thickness: 1,
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: 160,
-                    width: 130,
-                    child: Image.network(
-                      jsonDecode(widget.car.imageURL)[0],
-                      fit: BoxFit.cover,
-                    ),
+      onTap: null,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+          boxShadow: null,
+        ),
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Divider(
+              color: Colors.black,
+              height: 5,
+              thickness: 1,
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 160,
+                  width: 130,
+                  child: Image.network(
+                    jsonDecode(widget.car.imageURL)[0],
+                    fit: BoxFit.cover,
                   ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                car.name,
-                                overflow: TextOverflow.fade,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              car.name,
+                              overflow: TextOverflow.fade,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                            // Container(
-                            //   margin: const EdgeInsets.only(left: 16),
-                            //   decoration: BoxDecoration(
-                            //       color: Colors.black,
-                            //       borderRadius: const BorderRadius.all(
-                            //           Radius.circular(5))),
-                            //   padding: const EdgeInsets.all(3),
-                            //   child: Text(
-                            //     '2019',
-                            //     style: TextStyle(
-                            //         color: Colors.blueAccent,
-                            //         fontSize: 10,
-                            //         fontWeight: FontWeight.w500),
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text.rich(
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: Text.rich(
+                              softWrap: false,
+                              overflow: TextOverflow.fade,
+                              TextSpan(
+                                text: 'EGP ${car.getHighestBid().toString()}',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF006E7F)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: Image.asset(
+                              "assets/images/car_ad_icons/icons8-engine-30.png",
+                              height: 20,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text.rich(
                                 softWrap: false,
                                 overflow: TextOverflow.fade,
                                 TextSpan(
-                                  text: 'Engine: ',
+                                  text: '  ${car.engine}',
                                   style: TextStyle(
                                       fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey),
-                                  children: <InlineSpan>[
-                                    TextSpan(
-                                      text: car.engine,
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text.rich(
-                                softWrap: false,
-                                overflow: TextOverflow.fade,
-                                TextSpan(
-                                  text: 'Mileage: ',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey),
-                                  children: <InlineSpan>[
-                                    TextSpan(
-                                      text: car.mileage.toString(),
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text.rich(
-                                softWrap: false,
-                                overflow: TextOverflow.fade,
-                                TextSpan(
-                                    text: 'Transmission: ',
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey),
-                                    children: <InlineSpan>[
-                                      TextSpan(
-                                        text: car.transmission,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black),
-                                      ),
-                                    ]),
-                              ),
-                            ),
-                            // SizedBox(
-                            //   width: 16,
-                            // ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Column(
-                              children: [
-                                // SizedBox(
-                                //   width: 5,
-                                // ),
-                                // Expanded(
-                                //   child: Text.rich(
-                                //     // softWrap: false,
-                                //     // overflow: TextOverflow.fade,
-                                //     TextSpan(
-                                //       text: car.getCountDown().toString(),
-                                //       style: TextStyle(
-                                //           // backgroundColor: Colors.red[800],
-                                //           fontSize: 12,
-                                //           fontWeight: FontWeight.w700,
-                                //           color: Colors.red[800]),
-                                //     ),
-                                //   ),
-                                // ),
-                                // SizedBox(
-                                //   height: 5,
-                                // ),
-                                // Expanded(
-                                //   child: Text.rich(
-                                //     // softWrap: false,
-                                //     // overflow: TextOverflow.fade,
-                                //     TextSpan(
-                                //       text: 'Remaining',
-                                //       style: TextStyle(
-                                //           // backgroundColor: Colors.red[800],
-                                //           fontSize: 12,
-                                //           fontWeight: FontWeight.w700,
-                                //           color: Colors.red[800]),
-                                //     ),
-                                //   ),
-                                // ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                              child: Text.rich(
-                                softWrap: false,
-                                overflow: TextOverflow.fade,
-                                TextSpan(
-                                  text:
-                                      '${car.getHighestBid().toString()} L.E.',
-                                  style: TextStyle(
-                                      fontSize: 16,
                                       fontWeight: FontWeight.w700,
-                                      color: Colors.red[800]),
-                                ),
+                                      color: Colors.black),
+                                )),
+                          ),
+                          SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: Image.asset(
+                              "assets/images/car_ad_icons/icons8-transmission-64.png",
+                              height: 20,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text.rich(
+                                softWrap: false,
+                                overflow: TextOverflow.fade,
+                                TextSpan(
+                                  text: '  ${car.transmission}',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black),
+                                )),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: Image.asset(
+                              "assets/images/car_ad_icons/icons8-odometer-50.png",
+                              height: 20,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text.rich(
+                                softWrap: false,
+                                overflow: TextOverflow.fade,
+                                TextSpan(
+                                  text: '  ${car.mileage}',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black),
+                                )),
+                          ),
+                          SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: Image.asset(
+                              "assets/images/car_ad_icons/icons8-year-64.png",
+                              height: 20,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          // Expanded(
+                          //   child: Container(
+                          //     margin: const EdgeInsets.only(left: 16),
+                          //     decoration: BoxDecoration(
+                          //         color: Color(0xFFA10035),
+                          //         borderRadius: const BorderRadius.all(
+                          //             Radius.circular(5))),
+                          //     padding: const EdgeInsets.all(3),
+                          //     child: Text(
+                          //       '2019',
+                          //       style: TextStyle(
+                          //           color: Color(0xFFFEC260),
+                          //           fontSize: 10,
+                          //           fontWeight: FontWeight.w500),
+                          //     ),
+                          //   ),
+                          // ),
+                          Expanded(
+                            child: Text.rich(
+                                softWrap: false,
+                                overflow: TextOverflow.fade,
+                                TextSpan(
+                                  text: '  ${car.year}',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black),
+                                )),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              car.getCountDown().toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                // backgroundColor: Color(0xFFFEC260),
+                                color: Color(0xFFA10035),
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              Divider(
-                color: Colors.black,
-                height: 5,
-                thickness: 1,
-              ),
-            ],
-          ),
-        )
-        // Card(
-        //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        //   elevation: 4,
-        //   margin: EdgeInsets.all(10),
-        //   child: Column(children: [
-        //     Stack(children: [
-        //       ClipRRect(
-        //         borderRadius: BorderRadius.only(
-        //             topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-        //         child: Image.network(
-        //           widget.car.imageURL,
-        //           height: 250,
-        //           width: double.infinity,
-        //           fit: BoxFit.cover,
-        //         ),
-        //       ),
-        //       Positioned.fill(
-        //         bottom: 0,
-        //         child: ClipRRect(
-        //           borderRadius: BorderRadius.only(
-        //               topLeft: Radius.circular(15),
-        //               topRight: Radius.circular(15)),
-        //           child: Container(
-        //             color: Colors.black38,
-        //             child: Center(
-        //               child: Text(
-        //                 widget.car.year +
-        //                     " " +
-        //                     widget.car.make +
-        //                     " " +
-        //                     widget.car.model,
-        //                 softWrap: true,
-        //                 overflow: TextOverflow.fade,
-        //                 style: TextStyle(color: Colors.white, fontSize: 30),
-        //                 textAlign: TextAlign.center,
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       )
-        //     ]),
-        //     Container(
-        //         margin: EdgeInsets.all(15),
-        //         padding: EdgeInsets.all(15),
-        //         child: Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceAround,
-        //           children: [
-        //             Column(
-        //               children: [
-        //                 Container(
-        //                     padding: EdgeInsets.only(top: 10),
-        //                     child: Text(widget.car.startPrice.toString())),
-        //                 Container(
-        //                     padding: EdgeInsets.only(top: 5),
-        //                     child: Text("Start Price"))
-        //               ],
-        //             ),
-        //             Column(
-        //               children: [
-        //                 Container(
-        //                     padding: EdgeInsets.only(top: 10),
-        //                     child: Text(widget.car.color)),
-        //                 Container(
-        //                     padding: EdgeInsets.only(top: 5),
-        //                     child: Text("Color"))
-        //               ],
-        //             ),
-        //             Column(
-        //               children: [
-        //                 Container(
-        //                   padding: EdgeInsets.only(top: 5),
-        //                   child: Text(widget.car.sellerId),
-        //                 ),
-        //                 Container(
-        //                     padding: EdgeInsets.only(top: 5),
-        //                     child: Text("Seller"))
-        //               ],
-        //             ),
-        //             InkWell(
-        //                 onTap: null,
-        //                 child: Container(
-        //                   child: Column(
-        //                     children: [
-        //                       Icon(Icons.favorite),
-        //                       Container(
-        //                           padding: EdgeInsets.only(top: 5),
-        //                           child: Text("Favorites")),
-        //                     ],
-        //                   ),
-        //                 ))
-        //           ],
-        //         ))
-        //   ]),
-        // ),
-        );
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+            Divider(
+              color: Colors.black,
+              height: 5,
+              thickness: 1,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
