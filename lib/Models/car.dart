@@ -68,7 +68,8 @@ class Car {
     print(data);
     return Car(
       id: id,
-      name: data['name'] ?? "",
+      name: "This is a long name for testing",
+      // data['name'] ?? "",
       make: data['make'] ?? "",
       model: data['model'] ?? "",
       year: data['year'] ?? "",
