@@ -37,9 +37,8 @@ class _AvailableCarsState extends State<AvailableCars> {
         var filter;
         if (filterProvider.filter.isNotEmpty) {
           filter = filterProvider.filter;
-          filteredCars = carList.where((car) => (filter['make'] != null &&
-              filter['make'] == car.make &&
-              filter['model'] != null));
+          filteredCars = carList.where(
+              (car) => (filter['make'] != null && filter['make'] == car.make));
         } else {
           filteredCars = carList;
         }
