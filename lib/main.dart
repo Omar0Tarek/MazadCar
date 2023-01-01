@@ -4,6 +4,7 @@ import "package:firebase_core/firebase_core.dart";
 import 'package:mazadcar/Providers/filter.dart';
 import 'package:mazadcar/Screens/Auth/Utils.dart';
 import 'package:mazadcar/Screens/Common/filterScreen.dart';
+import 'package:mazadcar/Screens/Buyer/CarAdPage.dart';
 import 'package:mazadcar/Screens/Common/profile.dart';
 import 'package:mazadcar/Screens/Seller/addCarImage.dart';
 import 'package:mazadcar/Screens/tabControllerScreen.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
             '/profile': (ctx) => Profile(),
             '/forgotPassword': (ctx) => ForgotPassword(),
             '/filterCars': (ctx) => FilterScreen(),
+            '/carAdPage': (dummyctx) => CarAdPage(),
           },
         ));
   }
