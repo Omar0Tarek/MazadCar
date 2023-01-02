@@ -39,6 +39,7 @@ class _FilterScreenState extends State<FilterScreen> {
     var carInstances = FirebaseFirestore.instance.collection("cars");
     var myStream = carInstances.snapshots();
     var filter = filterProvider.filter;
+
     if (filter['make'] != null && (appliedFilter['make'] == null)) {
       appliedMake = filter['make'];
       appliedFilter['make'] = filter['make'];
@@ -56,8 +57,8 @@ class _FilterScreenState extends State<FilterScreen> {
       appliedMileage = filter['maxMileage'].toString();
       appliedFilter['maxMileage'] = filter['maxMileage'];
       mileageController.text = appliedMileage;
-      //mileageController.value = appliedMileage;
     }
+
     return StreamBuilder<QuerySnapshot>(
       stream: myStream,
       builder: (ctx, strSnapshot) {
