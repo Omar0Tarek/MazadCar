@@ -31,14 +31,33 @@ class _AvailableCarsState extends State<AvailableCars> {
           );
         }
         var carDocs = strSnapshot.data!.docs;
-        var carList = carDocs.map(
+        Iterable<Car> carList = carDocs.map(
             (e) => Car.constructFromFirebase(e.data() as Map, e.reference.id));
-        var filteredCars;
+        Iterable<Car> filteredCars;
         var filter;
         if (filterProvider.filter.isNotEmpty) {
           filter = filterProvider.filter;
-          filteredCars = carList.where(
-              (car) => (filter['make'] != null && filter['make'] == car.make));
+          filteredCars = carList;
+
+          if (filter['make'] != null && filter['make'].toString() != 'All') {
+            filteredCars = filteredCars
+                .where((car) => (filter['make'] == car.make.toLowerCase()));
+          }
+          if (filter['location'] != null &&
+              filter['location'].toString() != 'All') {
+            filteredCars = filteredCars.where(
+                (car) => (filter['location'] == car.location.toLowerCase()));
+          }
+          if (filter['maxMileage'] != null) {
+            filteredCars = filteredCars
+                .where((car) => (filter['maxMileage'] >= car.mileage));
+          }
+          if (filter['transmission'] != null &&
+              filter['transmission'].toString() != 'All') {
+            filteredCars = filteredCars.where((car) =>
+                (filter['transmission'].toString().toLowerCase() ==
+                    car.transmission.toLowerCase()));
+          }
         } else {
           filteredCars = carList;
         }
