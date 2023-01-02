@@ -7,15 +7,15 @@ class Car {
   final String name;
   final String make;
   final String model;
-  final String color;
-  final String year;
+  final String color; //
+  final String year; //
   final int mileage;
   final String transmission;
   final String engine;
 
   // Ad Info
   final String sellerId;
-  final int startPrice;
+  final int startPrice; //
   final Map<String, int> bids;
   final DateTime startDate;
   final DateTime endDate;
