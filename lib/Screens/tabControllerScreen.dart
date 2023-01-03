@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:mazadcar/Chat/chatTabBar.dart';
 import 'package:mazadcar/Models/car.dart';
 import 'package:mazadcar/Screens/Common/availableCars.dart';
 import 'package:mazadcar/Screens/Common/myCars.dart';
@@ -37,7 +38,7 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    myPages = [AvailableCars(), MyCars(), Saved(), Chat()];
+    myPages = [AvailableCars(), MyCars(), Saved(), ChatTabBar()];
 
     return Scaffold(
       appBar: AppBar(
