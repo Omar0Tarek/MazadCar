@@ -73,7 +73,7 @@ class _ShowMessagesState extends State<ShowMessages> {
                           decoration: BoxDecoration(
                               color: (newmessage.senderID ==
                                       FirebaseAuth.instance.currentUser!.uid)
-                                  ? Color(0xff2865DC)
+                                  ? Colors.black
                                   : Color(0xffFFFFFF),
                               borderRadius: BorderRadius.circular(10),
                               shape: BoxShape.rectangle,
@@ -143,19 +143,19 @@ class _ShowMessagesState extends State<ShowMessages> {
                                           : Colors.black,
                                     ),
                                   ),
-                                  (newmessage.senderID ==
-                                          FirebaseAuth
-                                              .instance.currentUser!.uid)
-                                      ? Icon(
-                                          Icons.check,
-                                          size: 16,
-                                          color: (newmessage.senderID ==
-                                                  FirebaseAuth.instance
-                                                      .currentUser!.uid)
-                                              ? Colors.white
-                                              : Colors.black,
-                                        )
-                                      : Text(""),
+                                  // (newmessage.senderID ==
+                                  //         FirebaseAuth
+                                  //             .instance.currentUser!.uid)
+                                  //     ? Icon(
+                                  //         Icons.check,
+                                  //         size: 16,
+                                  //         color: (newmessage.senderID ==
+                                  //                 FirebaseAuth.instance
+                                  //                     .currentUser!.uid)
+                                  //             ? Colors.white
+                                  //             : Colors.black,
+                                  //       )
+                                  //     : Text(""),
                                 ],
                               )
                             ],
