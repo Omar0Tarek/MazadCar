@@ -18,6 +18,23 @@ class _CarAdPageState extends State<CarAdPage> {
         ModalRoute.of(context)!.settings.arguments as Map<String, Car>;
     Car car = routeArgs['car']!;
 
+    getNameRow(String name) {
+      return Container(
+        margin: const EdgeInsets.all(8),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            name,
+            style: const TextStyle(
+              color: Color(0xFF006E7F),
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      );
+    }
+
     // TO DO: Show Icons
     Widget getDetailsRow(String rowName, String rowValue) {
       return Column(
@@ -122,25 +139,17 @@ class _CarAdPageState extends State<CarAdPage> {
                   }).toList(),
                 ),
               ),
-              // const Divider(
-              //   color: Color(0xFF006E7F),
-              //   height: 3,
-              //   thickness: 1,
-              // ),
-              Container(
-                margin: const EdgeInsets.all(8),
-                child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Details",
-                    style: TextStyle(
-                      color: Color(0xFF006E7F),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+              getNameRow(car.name),
+              getDetailsRow(car.location, car.startDate.toString()),
+              const SizedBox(
+                height: 15,
               ),
+              const Divider(
+                color: Color(0xFF006E7F),
+                height: 3,
+                thickness: 0.8,
+              ),
+              getSectionName("Details"),
               getDetailsRow("Make", car.make),
               getDetailsRowDivider(),
               getDetailsRow("Model", car.model),
@@ -162,20 +171,7 @@ class _CarAdPageState extends State<CarAdPage> {
                 height: 3,
                 thickness: 0.8,
               ),
-              Container(
-                margin: const EdgeInsets.all(8),
-                child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Description",
-                    style: TextStyle(
-                      color: Color(0xFF006E7F),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
+              getSectionName("Description"),
               const SizedBox(
                 height: 15,
               ),
@@ -184,21 +180,25 @@ class _CarAdPageState extends State<CarAdPage> {
                 height: 3,
                 thickness: 0.8,
               ),
-              Container(
-                margin: const EdgeInsets.all(8),
-                child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Seller Intro + Chat Button",
-                    style: TextStyle(
-                      color: Color(0xFF006E7F),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
+              getSectionName("Seller Intro + Chat Button"),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  getSectionName(String sectionName) {
+    return Container(
+      margin: const EdgeInsets.all(8),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          sectionName,
+          style: const TextStyle(
+            color: Color(0xFF006E7F),
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
