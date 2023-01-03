@@ -95,4 +95,12 @@ class Car {
   void addBid(String uid, int bidValue) {
     bids[uid] = bidValue;
   }
+
+  bool userHasBid(String biddingUserID) {
+    return bids.containsKey(biddingUserID);
+  }
+
+  void cancelUserBid(String biddingUserID) {
+    bids.remove(biddingUserID);
+  }
 }
