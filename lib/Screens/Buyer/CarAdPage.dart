@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mazadcar/Models/car.dart';
@@ -12,11 +14,26 @@ class CarAdPage extends StatefulWidget {
 }
 
 class _CarAdPageState extends State<CarAdPage> {
+  final bidValue = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final routeArgs =
         ModalRoute.of(context)!.settings.arguments as Map<String, Car>;
     Car car = routeArgs['car']!;
+
+    addBid() {
+      String biddingUserID = FirebaseAuth.instance.currentUser!.uid;
+      car.addBid(biddingUserID, int.parse(bidValue.text));
+      FirebaseFirestore.instance
+          .collection("cars")
+          .doc(car.id)
+          .update({
+            'bids': car.bids,
+          })
+          .catchError((err) {})
+          .then((_) {});
+    }
 
     getNameRow(String name) {
       return Container(
@@ -141,6 +158,32 @@ class _CarAdPageState extends State<CarAdPage> {
               ),
               getNameRow(car.name),
               getDetailsRow(car.location, car.startDate.toString()),
+              getDetailsRow("Highest Bid", car.getHighestBid().toString()),
+              getDetailsRow("Bid End", car.getCountDown().toString()),
+              ...car.bids.entries.map(
+                  (e) => getDetailsRow('Bid Id: ${e.key}', e.value.toString())),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(5),
+                      margin: EdgeInsets.all(5),
+                      child: TextField(
+                        decoration: InputDecoration(labelText: "Bid Price"),
+                        controller: bidValue,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: () => addBid(),
+                    child: Text('Bid'),
+                  )
+                ],
+              ),
               const SizedBox(
                 height: 15,
               ),

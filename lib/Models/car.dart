@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/src/widgets/editable_text.dart';
+
 class Car {
   final String id;
 
@@ -88,5 +90,9 @@ class Car {
       startDate: DateTime.now(),
       endDate: DateTime.now(),
     );
+  }
+
+  void addBid(String uid, int bidValue) {
+    bids[uid] = bidValue;
   }
 }
