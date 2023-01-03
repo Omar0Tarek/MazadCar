@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/src/widgets/editable_text.dart';
+
 class Car {
   final String id;
 
@@ -20,10 +22,12 @@ class Car {
   final DateTime startDate;
   final DateTime endDate;
 
-  final String location;
+  final String location; // to be displayed
   String imageURL; // to be turned into a list
 
   final String comments; // to be turned into a list
+
+  // Add Description field
 
   Car({
     required this.id,
@@ -68,7 +72,8 @@ class Car {
     print(data);
     return Car(
       id: id,
-      name: data['name'] ?? "",
+      name: "This is a long name for testing",
+      // data['name'] ?? "",
       make: data['make'] ?? "",
       model: data['model'] ?? "",
       year: data['year'] ?? "",
@@ -85,5 +90,9 @@ class Car {
       startDate: DateTime.now(),
       endDate: DateTime.now(),
     );
+  }
+
+  void addBid(String uid, int bidValue) {
+    bids[uid] = bidValue;
   }
 }
