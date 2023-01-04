@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mazadcar/Screens/Buyer/BidsPlaced.dart';
+import 'package:mazadcar/Screens/Seller/myAds.dart';
 import 'package:mazadcar/Screens/Seller/soldCars.dart';
 
 class MyTabbedPage extends StatefulWidget {
@@ -51,7 +52,7 @@ class _MyTabbedPageState extends State<MyTabbedPage>
             children: myTabs.map((Tab tab) {
               final String label = tab.text!.toLowerCase();
               return label.compareTo("ads placed") == 0
-                  ? SoldCars()
+                  ? MyAds()
                   : BidsPlaced();
             }).toList(),
           ),

@@ -90,8 +90,8 @@ class Car {
       startPrice: data['startPrice'],
       comments: data['comments'] ?? "",
       bids: Map<String, int>.from(data['bids']),
-      startDate: DateTime.now(),
-      endDate: DateTime.now(),
+      startDate: data['startDate'].toDate() ?? DateTime.now(),
+      endDate: data['endDate'].toDate() ?? DateTime.now(),
     );
   }
 

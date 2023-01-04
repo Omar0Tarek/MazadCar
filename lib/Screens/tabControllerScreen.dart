@@ -68,7 +68,11 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
         backgroundColor: Colors.white,
         title: Container(
           margin: EdgeInsets.all(15),
-          padding: EdgeInsets.only(left: 55, bottom: 20, top: 10),
+          padding:
+              //  selectedTabIndex == 0
+              //     ? EdgeInsets.only(left: 75, bottom: 20, top: 10)
+              //     :
+              EdgeInsets.only(left: 55, bottom: 20, top: 10),
           child: Image.asset(
             'assets/images/logo.png',
           ),

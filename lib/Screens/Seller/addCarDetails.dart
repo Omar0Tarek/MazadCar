@@ -219,7 +219,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           'comments': commentsValue.text,
                           'bids': Map(),
                           'startDate': DateTime.now(),
-                          'endDate': DateTime.now().add(Duration(hours: 1)),
+                          'endDate': DateTime.now().add(Duration(hours: 48)),
                         }).then((documentSnapshot) {
                           setState(() {
                             isLoading = false;
