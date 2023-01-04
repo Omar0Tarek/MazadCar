@@ -39,6 +39,21 @@ class _CarAdPageState extends State<CarAdPage> {
     return chatUser;
   }
 
+  static Future<UserModel?> getUserModelbyId(String uid) async {
+    UserModel? chatUser;
+
+    DocumentSnapshot docsnapshot =
+        await FirebaseFirestore.instance.collection("users").doc(uid).get();
+
+    if (docsnapshot.data() != null) {
+      var user = docsnapshot.data();
+
+      chatUser = UserModel.constructFromFirebase(
+          user as Map, docsnapshot.reference.id);
+    }
+    return chatUser;
+  }
+
   @override
   Widget build(BuildContext context) {
     final routeArgs =
