@@ -77,7 +77,6 @@ class _BuyerChatState extends State<BuyerChat> {
   Widget build(BuildContext context) {
     final user = auth.currentUser;
     var chatInstances = FirebaseFirestore.instance.collection("chats");
-    //  var myStream = chatInstances.snapshots();
 
     return Container(
       child: StreamBuilder(
@@ -114,6 +113,7 @@ class _BuyerChatState extends State<BuyerChat> {
                             List<dynamic> images = jsonDecode(carAD.imageURL);
 
                             return Container(
+                              margin: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                   boxShadow: [
                                     BoxShadow(
@@ -211,10 +211,6 @@ class _BuyerChatState extends State<BuyerChat> {
                                             ),
                                           ],
                                         ),
-                                  // trailing: Image.asset(
-                                  //   "car.png",
-                                  //   scale: 3.5,
-                                  // ),
                                 ),
                               ),
                             );

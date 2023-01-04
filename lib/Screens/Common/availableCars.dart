@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mazadcar/Providers/filter.dart';
 
@@ -19,7 +20,11 @@ class _AvailableCarsState extends State<AvailableCars> {
   Widget build(BuildContext context) {
     final filterProvider = Provider.of<FilterProvider>(context);
 
-    var carInstances = FirebaseFirestore.instance.collection("cars");
+    var carInstances = FirebaseFirestore.instance.collection("cars").where(
+        "sellerId",
+        isNotEqualTo: FirebaseAuth.instance.currentUser!.uid);
+
+    print(FirebaseAuth.instance.currentUser!.uid);
     var myStream = carInstances.snapshots();
 
     return StreamBuilder<QuerySnapshot>(

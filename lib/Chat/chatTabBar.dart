@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mazadcar/Chat/allChat.dart';
 import 'package:mazadcar/Chat/buyerChat.dart';
 import 'package:mazadcar/Chat/sellerChat.dart';
 
@@ -56,8 +55,6 @@ class _chatTabCarState extends State<ChatTabBar>
               print(label);
               return label.compareTo("selling") == 0
                   ? SellerChat()
-                  // : label.compareTo("all") == 0
-                  //     ? AllChat()
                   : BuyerChat();
             }).toList(),
           ),
