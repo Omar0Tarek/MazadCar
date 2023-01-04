@@ -61,7 +61,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
     Text('Used')
   ];
 
-  final List<bool> _selectedEngine = <bool>[true, false];
+  final List<bool> _selectedEngine = <bool>[false, false];
   final List<bool> _selectedTransmission = <bool>[false, false, false, false];
   final List<bool> _selectedPayment = <bool>[false, false];
   final List<bool> _selectedCondition = <bool>[false, false];

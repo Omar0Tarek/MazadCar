@@ -15,6 +15,13 @@ class CarAdPage extends StatefulWidget {
 
 class _CarAdPageState extends State<CarAdPage> {
   final bidValue = TextEditingController();
+  bool _makeBid = false;
+
+  void showToast() {
+    setState(() {
+      _makeBid = !_makeBid;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +73,8 @@ class _CarAdPageState extends State<CarAdPage> {
           child: Text(
             name,
             style: const TextStyle(
-              color: Color(0xFF006E7F),
-              fontSize: 20,
+              color: Colors.black,
+              fontSize: 25,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -93,7 +100,7 @@ class _CarAdPageState extends State<CarAdPage> {
                   child: Text(
                     rowName,
                     style: const TextStyle(
-                      color: Color(0xFF006E7F),
+                      color: Colors.black,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -107,7 +114,7 @@ class _CarAdPageState extends State<CarAdPage> {
                     rowValue,
                     textAlign: TextAlign.end,
                     style: const TextStyle(
-                      color: Color(0xFF006E7F),
+                      color: Colors.black,
                       fontSize: 16,
                       fontWeight: FontWeight.w300,
                     ),
@@ -128,7 +135,7 @@ class _CarAdPageState extends State<CarAdPage> {
 
     getDetailsRowDivider() {
       return const Divider(
-        color: Color(0xFF006E7F),
+        color: Colors.black,
         height: 3,
         thickness: 0.5,
       );
@@ -179,82 +186,117 @@ class _CarAdPageState extends State<CarAdPage> {
                   }).toList(),
                 ),
               ),
-              getNameRow(car.name),
+              getNameRow(
+                  (car.make + " " + car.model + " " + car.year).toUpperCase()),
               getDetailsRow(car.payment, car.startDate.toString()),
               getDetailsRow("Highest Bid", car.getHighestBid().toString()),
               getDetailsRow("Bid End", car.getCountDown().toString()),
               ...car.bids.entries.map(
                   (e) => getDetailsRow('Bid Id: ${e.key}', e.value.toString())),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(5),
-                      margin: EdgeInsets.all(5),
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(labelText: "Bid Price"),
-                        controller: bidValue,
-                      ),
-                    ),
+
+              /////////////////////////show when press button////////////////////////
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    textStyle: TextStyle(fontSize: 18),
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(13)),
+                    // minimumSize: Size.fromHeight(50),
                   ),
-                  TextButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue),
-                    ),
-                    onPressed: () => addBid(),
-                    child: Text('Bid'),
-                  )
-                ],
-              ),
-              TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                ),
-                onPressed: () => cancelBid(),
-                child: Text('Cancel Bid'),
-              ),
+                  onPressed: showToast,
+                  child: Text("Make Bid")),
+
+              ///
+              Visibility(
+                  visible: _makeBid,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(5),
+                              margin: EdgeInsets.all(5),
+                              child: TextField(
+                                keyboardType: TextInputType.number,
+                                decoration:
+                                    InputDecoration(labelText: "Bid Price"),
+                                controller: bidValue,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            style: ButtonStyle(
+                              foregroundColor:
+                                  MaterialStateProperty.all<Color>(Colors.blue),
+                            ),
+                            onPressed: () => addBid(),
+                            child: Text('Bid'),
+                          )
+                        ],
+                      ),
+                      TextButton(
+                        style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.blue),
+                        ),
+                        onPressed: () => cancelBid(),
+                        child: Text('Cancel Bid'),
+                      ),
+                    ],
+                  )),
+
+///////////////////////////////////////till here////////////////////////////
+
               const SizedBox(
                 height: 15,
               ),
               const Divider(
-                color: Color(0xFF006E7F),
+                color: Colors.black,
                 height: 3,
                 thickness: 0.8,
               ),
               getSectionName("Details"),
+              const Divider(
+                color: Colors.black,
+                height: 3,
+                thickness: 0.8,
+              ),
               getDetailsRow("Make", car.make),
               getDetailsRowDivider(),
               getDetailsRow("Model", car.model),
               getDetailsRowDivider(),
-              getDetailsRow("Color", car.color),
-              getDetailsRowDivider(),
               getDetailsRow("Year", car.year),
+              getDetailsRowDivider(),
+              getDetailsRow("Color", car.color),
               getDetailsRowDivider(),
               getDetailsRow("Mileage", car.mileage.toString()),
               getDetailsRowDivider(),
               getDetailsRow("Transmission", car.transmission),
               getDetailsRowDivider(),
               getDetailsRow("Engine", car.engine),
+              getDetailsRowDivider(),
+              getDetailsRow("Payment Option", car.payment),
+              getDetailsRowDivider(),
+              getDetailsRow("Condition", car.condition),
+              getDetailsRowDivider(),
               const SizedBox(
                 height: 15,
               ),
               const Divider(
-                color: Color(0xFF006E7F),
+                color: Colors.black,
                 height: 3,
                 thickness: 0.8,
               ),
-              getSectionName("Description"),
-              const SizedBox(
-                height: 15,
-              ),
-              const Divider(
-                color: Color(0xFF006E7F),
-                height: 3,
-                thickness: 0.8,
-              ),
+              // getSectionName("Description"),
+              // const SizedBox(
+              //   height: 15,
+              // ),
+              // const Divider(
+              //   color: Colors.black,
+              //   height: 3,
+              //   thickness: 0.8,
+              // ),
               getSectionName("Seller Intro + Chat Button"),
             ],
           ),
@@ -267,12 +309,12 @@ class _CarAdPageState extends State<CarAdPage> {
     return Container(
       margin: const EdgeInsets.all(8),
       child: Align(
-        alignment: Alignment.centerLeft,
+        alignment: Alignment.center,
         child: Text(
           sectionName,
           style: const TextStyle(
-            color: Color(0xFF006E7F),
-            fontSize: 16,
+            color: Colors.black,
+            fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
         ),
