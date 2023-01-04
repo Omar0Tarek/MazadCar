@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mazadcar/Providers/filter.dart';
 
-import 'package:mazadcar/Screens/Common/carCard.dart';
+import 'package:mazadcar/Screens/Common/mainCarCard.dart';
 import 'package:provider/provider.dart';
 
 import '../../Models/car.dart';
@@ -24,8 +24,14 @@ class _AvailableCarsState extends State<AvailableCars> {
         "sellerId",
         isNotEqualTo: FirebaseAuth.instance.currentUser!.uid);
 
+    var savedInstances = FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("saved");
+
     print(FirebaseAuth.instance.currentUser!.uid);
     var myStream = carInstances.snapshots();
+    var savedStream = savedInstances.snapshots();
 
     return StreamBuilder<QuerySnapshot>(
       stream: myStream,
@@ -36,6 +42,7 @@ class _AvailableCarsState extends State<AvailableCars> {
           );
         }
         var carDocs = strSnapshot.data!.docs;
+
         Iterable<Car> carList = carDocs.map(
             (e) => Car.constructFromFirebase(e.data() as Map, e.reference.id));
         Iterable<Car> filteredCars;
@@ -48,11 +55,11 @@ class _AvailableCarsState extends State<AvailableCars> {
             filteredCars = filteredCars
                 .where((car) => (filter['make'] == car.make.toLowerCase()));
           }
-          if (filter['location'] != null &&
-              filter['location'].toString() != 'All') {
-            filteredCars = filteredCars.where(
-                (car) => (filter['location'] == car.location.toLowerCase()));
-          }
+          // if (filter['location'] != null &&
+          //     filter['location'].toString() != 'All') {
+          //   filteredCars = filteredCars.where(
+          //       (car) => (filter['location'] == car.location.toLowerCase()));
+          // }
           if (filter['maxMileage'] != null) {
             filteredCars = filteredCars
                 .where((car) => (filter['maxMileage'] >= car.mileage));
@@ -69,7 +76,16 @@ class _AvailableCarsState extends State<AvailableCars> {
         return ListView.builder(
           itemBuilder: (itemCtx, index) {
             Car car = filteredCars.elementAt(index);
-            return CarCard(car: car);
+            // var snap = FirebaseFirestore.instance
+            //     .collection('users')
+            //     .doc(FirebaseAuth.instance.currentUser!.uid)
+            //     .collection("saved");
+            // snap.doc()
+
+            return MainCarCard(
+              car: car,
+              saved: false,
+            );
           },
           itemCount: filteredCars.length,
         );

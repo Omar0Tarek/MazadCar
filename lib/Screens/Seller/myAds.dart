@@ -37,7 +37,9 @@ class _MyAdsState extends State<MyAds> {
     var carInstances = FirebaseFirestore.instance
         .collection("cars")
         .where("sellerId", isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+
     var myStream = carInstances.snapshots();
+    // var myStreamSaved = savedInstances.snapshots();
     return StreamBuilder<QuerySnapshot>(
         stream: myStream,
         builder: (ctx, strSnapshot) {
