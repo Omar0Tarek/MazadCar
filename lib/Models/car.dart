@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/src/widgets/editable_text.dart';
@@ -70,6 +71,8 @@ class Car {
   static Car constructFromFirebase(Map<dynamic, dynamic> data, String id) {
     print("This is the data:");
     print(data);
+    print(data['bids']);
+    // print(jsonDecode(data['bids']));
     return Car(
       id: id,
       name: "This is a long name for testing",
@@ -86,7 +89,7 @@ class Car {
       engine: data['engine'] ?? "",
       startPrice: data['startPrice'],
       comments: data['comments'] ?? "",
-      bids: Map(),
+      bids: Map<String, int>.from(data['bids']),
       startDate: DateTime.now(),
       endDate: DateTime.now(),
     );
