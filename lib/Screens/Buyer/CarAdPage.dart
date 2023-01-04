@@ -157,7 +157,7 @@ class _CarAdPageState extends State<CarAdPage> {
                 ),
               ),
               getNameRow(car.name),
-              getDetailsRow(car.location, car.startDate.toString()),
+              getDetailsRow(car.payment, car.startDate.toString()),
               getDetailsRow("Highest Bid", car.getHighestBid().toString()),
               getDetailsRow("Bid End", car.getCountDown().toString()),
               ...car.bids.entries.map(

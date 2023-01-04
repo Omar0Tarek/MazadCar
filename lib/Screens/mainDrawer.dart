@@ -38,7 +38,7 @@ class MainDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.fastfood_rounded),
-            title: Text("Aklat"),
+            title: Text("Available Cars"),
             onTap: () {
               Navigator.of(context).pushNamed("/");
             },

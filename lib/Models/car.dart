@@ -22,10 +22,10 @@ class Car {
   final DateTime startDate;
   final DateTime endDate;
 
-  final String location; // to be displayed
+  final String payment; // to be displayed
   String imageURL; // to be turned into a list
 
-  final String comments; // to be turned into a list
+  final String condition;
 
   // Add Description field
 
@@ -44,9 +44,9 @@ class Car {
     required this.bids,
     required this.startDate,
     required this.endDate,
-    required this.location,
+    required this.payment,
     required this.imageURL,
-    required this.comments,
+    required this.condition,
   });
 
   int getHighestBid() {
@@ -81,11 +81,11 @@ class Car {
       color: data['color'] ?? "",
       sellerId: data['sellerId'] ?? "",
       imageURL: data['imageURL'],
-      location: data['location'] ?? "",
+      payment: data['payment'] ?? "",
       transmission: data['transmission'] ?? "",
       engine: data['engine'] ?? "",
       startPrice: data['startPrice'],
-      comments: data['comments'] ?? "",
+      condition: data['condition'] ?? "",
       bids: Map(),
       startDate: DateTime.now(),
       endDate: DateTime.now(),

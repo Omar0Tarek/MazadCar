@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
 import 'package:mazadcar/Providers/filter.dart';
+import 'package:mazadcar/Providers/savedProvider.dart';
 import 'package:mazadcar/Screens/Auth/Utils.dart';
 import 'package:mazadcar/Screens/Common/filterScreen.dart';
 import 'package:mazadcar/Screens/Buyer/CarAdPage.dart';
@@ -27,8 +28,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (ctx) => FilterProvider(),
+    return MultiProvider(
+        providers: [
+          Provider<FilterProvider>(create: (ctx) => FilterProvider()),
+          ListenableProvider<SavedProvider>(create: (ctx) => SavedProvider()),
+        ],
         child: MaterialApp(
           navigatorKey: navigatorKey,
           scaffoldMessengerKey: Utils.messengerKey,

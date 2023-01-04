@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mazadcar/Models/car.dart';
+import 'package:mazadcar/Providers/savedProvider.dart';
+import 'package:provider/provider.dart';
 
 class CarCard extends StatefulWidget {
   Car car;
@@ -22,6 +24,7 @@ class _CarCardState extends State<CarCard> {
 
   @override
   Widget build(BuildContext context) {
+    final savedProvider = Provider.of<SavedProvider>(context);
     return InkWell(
       onTap: () => goToCarAdPage(context),
       child: Container(
@@ -224,6 +227,14 @@ class _CarCardState extends State<CarCard> {
                               ),
                             ),
                           ),
+                          IconButton(
+                            onPressed: () {
+                              savedProvider.toggleFavorite(car.id);
+                            },
+                            icon: savedProvider.isExist(car.id)
+                                ? Icon(Icons.favorite, color: Colors.red)
+                                : Icon(Icons.favorite_border),
+                          )
                         ],
                       ),
                       SizedBox(

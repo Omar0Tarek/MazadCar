@@ -23,17 +23,57 @@ class AddCarDetails extends StatefulWidget {
 
 class _AddCarDetailsState extends State<AddCarDetails> {
   final modelValue = TextEditingController();
-
   final makeValue = TextEditingController();
+  //yearpicker
   final yearValue = TextEditingController();
   final mileageValue = TextEditingController();
   final colorValue = TextEditingController();
+  //buttons
   final engineValue = TextEditingController();
+  //buttons
   final transmissionValue = TextEditingController();
   final startPriceValue = TextEditingController();
-  final locationValue = TextEditingController();
+  //change loc to payment buttons
+  final paymentValue = TextEditingController();
   final sellerIdValue = TextEditingController();
-  final commentsValue = TextEditingController();
+  //comments to conditions buttons
+  final conditionValue = TextEditingController();
+
+  static const List<Widget> engineButtons = <Widget>[
+    Text('Manual'),
+    Text('Automatic')
+  ];
+
+  static const List<Widget> transmissionButtons = <Widget>[
+    Text('Benzine'),
+    Text('Diesel'),
+    Text('Electric'),
+    Text('Hybrid')
+  ];
+
+  static const List<Widget> paymentButtons = <Widget>[
+    Text('Cash'),
+    Text('Installments')
+  ];
+
+  static const List<Widget> conditionButtons = <Widget>[
+    Text('New'),
+    Text('Used')
+  ];
+
+  final List<bool> _selectedEngine = <bool>[true, false];
+  final List<bool> _selectedTransmission = <bool>[false, false, false, false];
+  final List<bool> _selectedPayment = <bool>[false, false];
+  final List<bool> _selectedCondition = <bool>[false, false];
+
+  String checkButtonVal(List<Widget> buttons, List<bool> _selected) {
+    String val = "";
+    final selectedControlIndex = _selected.indexWhere((selected) => selected);
+    val = buttons[selectedControlIndex] as String;
+    print(val);
+
+    return val;
+  }
 
   var isLoading = false;
 
@@ -90,12 +130,12 @@ class _AddCarDetailsState extends State<AddCarDetails> {
     startPriceValue.text = widget.extractedCar != null
         ? widget.extractedCar!.startPrice.toString()
         : startPriceValue.text;
-    locationValue.text = widget.extractedCar != null
-        ? widget.extractedCar!.location
-        : locationValue.text;
-    commentsValue.text = widget.extractedCar != null
-        ? widget.extractedCar!.comments
-        : commentsValue.text;
+    paymentValue.text = widget.extractedCar != null
+        ? widget.extractedCar!.payment
+        : paymentValue.text;
+    conditionValue.text = widget.extractedCar != null
+        ? widget.extractedCar!.condition
+        : conditionValue.text;
 
     return super.initState();
   }
@@ -168,11 +208,11 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                             'color': colorValue.text,
                             'sellerId': FirebaseAuth.instance.currentUser!.uid,
                             'imageURL': jsonEncode(value),
-                            'location': locationValue.text,
+                            'payment': paymentValue.text,
                             'transmission': transmissionValue.text,
                             'engine': engineValue.text,
                             'startPrice': int.parse(startPriceValue.text),
-                            'comments': commentsValue.text,
+                            'condition': conditionValue.text,
                           }).catchError((err) {
                             return showDialog(
                                 context: context,
@@ -212,11 +252,11 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           'color': colorValue.text,
                           'sellerId': FirebaseAuth.instance.currentUser!.uid,
                           'imageURL': jsonEncode(value),
-                          'location': locationValue.text,
+                          'payment': paymentValue.text,
                           'transmission': transmissionValue.text,
                           'engine': engineValue.text,
                           'startPrice': int.parse(startPriceValue.text),
-                          'comments': commentsValue.text,
+                          'condition': conditionValue.text,
                           'bids': Map(),
                           'startDate': DateTime.now(),
                           'endDate': DateTime.now().add(Duration(hours: 1)),
@@ -336,57 +376,181 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
                           child: TextField(
-                            decoration: InputDecoration(labelText: "Engine"),
-                            controller: engineValue,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(5),
-                          margin: EdgeInsets.all(5),
-                          child: TextField(
-                            decoration:
-                                InputDecoration(labelText: "Transmission"),
-                            controller: transmissionValue,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(5),
-                          margin: EdgeInsets.all(5),
-                          child: TextField(
                             decoration:
                                 InputDecoration(labelText: "Start Price"),
                             controller: startPriceValue,
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(5),
-                          margin: EdgeInsets.all(5),
-                          child: TextField(
-                            decoration: InputDecoration(labelText: "Location"),
-                            controller: locationValue,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
+                  // Row(
+                  //   children: [
+                  // Expanded(
+                  //   child:
                   Container(
                     padding: EdgeInsets.all(5),
                     margin: EdgeInsets.all(5),
-                    child: TextField(
-                      decoration: InputDecoration(labelText: "Comments"),
-                      controller: commentsValue,
+                    child: Column(
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        const Text(
+                          "Engine",
+                          textAlign: TextAlign.left,
+                        ),
+                        const SizedBox(height: 5),
+                        ToggleButtons(
+                          onPressed: (int index) {
+                            setState(() {
+                              // The button that is tapped is set to true, and the others to false.
+                              for (int i = 0; i < _selectedEngine.length; i++) {
+                                _selectedEngine[i] = i == index;
+                              }
+                            });
+                          },
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
+                          selectedBorderColor: Colors.grey[700],
+                          selectedColor: Colors.white,
+                          fillColor: Colors.grey[700],
+                          color: Colors.grey[400],
+                          constraints: const BoxConstraints(
+                            minHeight: 40.0,
+                            minWidth: 80.0,
+                          ),
+                          isSelected: _selectedEngine,
+                          children: engineButtons,
+                        ),
+                      ],
                     ),
                   ),
+                  //),
+
+                  // Expanded(
+                  //   child:
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    margin: EdgeInsets.all(5),
+                    child: Column(
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        const Text(
+                          "Payment",
+                          textAlign: TextAlign.left,
+                        ),
+                        const SizedBox(height: 5),
+                        ToggleButtons(
+                          onPressed: (int index) {
+                            setState(() {
+                              // The button that is tapped is set to true, and the others to false.
+                              for (int i = 0;
+                                  i < _selectedPayment.length;
+                                  i++) {
+                                _selectedPayment[i] = i == index;
+                              }
+                            });
+                          },
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
+                          selectedBorderColor: Colors.grey[700],
+                          selectedColor: Colors.white,
+                          fillColor: Colors.grey[700],
+                          color: Colors.grey[400],
+                          constraints: const BoxConstraints(
+                            minHeight: 40.0,
+                            minWidth: 80.0,
+                          ),
+                          isSelected: _selectedPayment,
+                          children: paymentButtons,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // ),
+
+                  // Expanded(
+                  //   child:
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    margin: EdgeInsets.all(5),
+                    child: Column(
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        const Text(
+                          "Transmission",
+                          textAlign: TextAlign.left,
+                        ),
+                        const SizedBox(height: 5),
+                        ToggleButtons(
+                          onPressed: (int index) {
+                            setState(() {
+                              // The button that is tapped is set to true, and the others to false.
+                              for (int i = 0;
+                                  i < _selectedTransmission.length;
+                                  i++) {
+                                _selectedTransmission[i] = i == index;
+                              }
+                            });
+                          },
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
+                          selectedBorderColor: Colors.grey[700],
+                          selectedColor: Colors.white,
+                          fillColor: Colors.grey[700],
+                          color: Colors.grey[400],
+                          constraints: const BoxConstraints(
+                            minHeight: 40.0,
+                            minWidth: 80.0,
+                          ),
+                          isSelected: _selectedTransmission,
+                          children: transmissionButtons,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // ),
+
+                  // Expanded(
+                  //   child:
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    margin: EdgeInsets.all(5),
+                    child: Column(
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        const Text(
+                          "Conditions",
+                          textAlign: TextAlign.left,
+                        ),
+                        const SizedBox(height: 5),
+                        ToggleButtons(
+                          onPressed: (int index) {
+                            setState(() {
+                              // The button that is tapped is set to true, and the others to false.
+                              for (int i = 0;
+                                  i < _selectedCondition.length;
+                                  i++) {
+                                _selectedCondition[i] = i == index;
+                              }
+                            });
+                          },
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
+                          selectedBorderColor: Colors.grey[700],
+                          selectedColor: Colors.white,
+                          fillColor: Colors.grey[700],
+                          color: Colors.grey[400],
+                          constraints: const BoxConstraints(
+                            minHeight: 40.0,
+                            minWidth: 80.0,
+                          ),
+                          isSelected: _selectedCondition,
+                          children: conditionButtons,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // )
                 ],
               ));
   }

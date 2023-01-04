@@ -46,7 +46,7 @@ class _AvailableCarsState extends State<AvailableCars> {
           if (filter['location'] != null &&
               filter['location'].toString() != 'All') {
             filteredCars = filteredCars.where(
-                (car) => (filter['location'] == car.location.toLowerCase()));
+                (car) => (filter['location'] == car.payment.toLowerCase()));
           }
           if (filter['maxMileage'] != null) {
             filteredCars = filteredCars
