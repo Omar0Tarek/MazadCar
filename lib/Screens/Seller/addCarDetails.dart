@@ -11,6 +11,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mazadcar/Models/car.dart';
+import 'package:mazadcar/Screens/Common/myCars.dart';
+import 'package:mazadcar/Screens/tabControllerScreen.dart';
 import 'package:mazadcar/providers/storage.dart';
 
 class AddCarDetails extends StatefulWidget {
@@ -128,21 +130,50 @@ class _AddCarDetailsState extends State<AddCarDetails> {
     colorValue.text = widget.extractedCar != null
         ? widget.extractedCar!.color
         : colorValue.text;
-    // engineValue.text = widget.extractedCar != null
-    //     ? widget.extractedCar!.engine
-    //     : engineValue.text;
-    // transmissionValue.text = widget.extractedCar != null
-    //     ? widget.extractedCar!.transmission
-    //     : transmissionValue.text;
+    startDate = widget.extractedCar != null
+        ? DateFormat().format(widget.extractedCar!.startDate)
+        : "";
+    endDate = widget.extractedCar != null
+        ? DateFormat().format(widget.extractedCar!.endDate)
+        : "";
     startPriceValue.text = widget.extractedCar != null
         ? widget.extractedCar!.startPrice.toString()
         : startPriceValue.text;
-    // paymentValue.text = widget.extractedCar != null
-    //     ? widget.extractedCar!.payment
-    //     : paymentValue.text;
-    // conditionValue.text = widget.extractedCar != null
-    //     ? widget.extractedCar!.condition
-    //     : conditionValue.text;
+    if (widget.extractedCar != null) {
+      if (widget.extractedCar!.engine == "Manual") {
+        _selectedEngine[0] = true;
+      } else {
+        _selectedEngine[1] = true;
+      }
+    }
+
+    if (widget.extractedCar != null) {
+      if (widget.extractedCar!.payment == "Cash") {
+        _selectedPayment[0] = true;
+      } else {
+        _selectedPayment[1] = true;
+      }
+    }
+
+    if (widget.extractedCar != null) {
+      if (widget.extractedCar!.condition == "New") {
+        _selectedCondition[0] = true;
+      } else {
+        _selectedCondition[1] = true;
+      }
+    }
+
+    if (widget.extractedCar != null) {
+      if (widget.extractedCar!.transmission == "Benzine") {
+        _selectedTransmission[0] = true;
+      } else if (widget.extractedCar!.transmission == "Diesel") {
+        _selectedTransmission[1] = true;
+      } else if (widget.extractedCar!.transmission == "Electric") {
+        _selectedTransmission[2] = true;
+      } else {
+        _selectedTransmission[3] = true;
+      }
+    }
 
     return super.initState();
   }
@@ -215,11 +246,18 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                             'color': colorValue.text,
                             'sellerId': FirebaseAuth.instance.currentUser!.uid,
                             'imageURL': jsonEncode(value),
-                            'payment': paymentValue.text,
-                            'transmission': transmissionValue.text,
-                            'engine': engineValue.text,
+                            'payment': checkButtonVal(
+                                paymentButtons, _selectedPayment),
+                            'transmission': checkButtonVal(
+                                transmissionButtons, _selectedTransmission),
+                            'engine':
+                                checkButtonVal(engineButtons, _selectedEngine),
                             'startPrice': int.parse(startPriceValue.text),
-                            'condition': conditionValue.text,
+                            'condition': checkButtonVal(
+                                conditionButtons, _selectedCondition),
+                            'bids': widget.extractedCar!.bids,
+                            'startDate': DateFormat().parse(startDate),
+                            'endDate': DateFormat().parse(endDate),
                           }).catchError((err) {
                             return showDialog(
                                 context: context,
@@ -246,7 +284,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                               isLoading = false;
                             });
                             Navigator.of(context)
-                                .pushReplacementNamed('/myAds');
+                                .pushNamedAndRemoveUntil('/', (route) => false);
                           });
                         });
                       } else {
@@ -276,6 +314,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           setState(() {
                             isLoading = false;
                           });
+
                           Navigator.of(context)
                               .pushNamedAndRemoveUntil('/', (route) => false);
                         }).catchError((err) {
