@@ -5,12 +5,13 @@ class UserModel {
   String name;
   String profilepic;
 
-  UserModel(
-      {required this.id,
-      required this.email,
-      required this.phone,
-      required this.profilepic,
-      required this.name});
+  UserModel({
+    required this.id,
+    required this.email,
+    required this.phone,
+    required this.profilepic,
+    required this.name,
+  });
 
   static UserModel constructFromFirebase(
       Map<dynamic, dynamic> data, String id) {

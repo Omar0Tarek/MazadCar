@@ -13,8 +13,8 @@ class ChatTabBar extends StatefulWidget {
 class _chatTabCarState extends State<ChatTabBar>
     with SingleTickerProviderStateMixin {
   static const List<Tab> myTabs = <Tab>[
-    Tab(text: 'Selling'),
-    Tab(text: 'Buying'),
+    Tab(text: 'Interested Buyers'),
+    Tab(text: 'Car Requests'),
   ];
 
   late TabController _tabController;
@@ -53,9 +53,7 @@ class _chatTabCarState extends State<ChatTabBar>
             children: myTabs.map((Tab tab) {
               final String label = tab.text!.toLowerCase();
               print(label);
-              return label.compareTo("selling") == 0
-                  ? SellerChat()
-                  : BuyerChat();
+              return label.contains("buyers") ? SellerChat() : BuyerChat();
             }).toList(),
           ),
         ));

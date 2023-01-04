@@ -5,6 +5,7 @@ import 'package:mazadcar/Providers/filter.dart';
 import 'package:mazadcar/Screens/Auth/Utils.dart';
 import 'package:mazadcar/Screens/Common/filterScreen.dart';
 import 'package:mazadcar/Screens/Buyer/CarAdPage.dart';
+import 'package:mazadcar/Screens/Common/myCars.dart';
 import 'package:mazadcar/Screens/Common/profile.dart';
 import 'package:mazadcar/Screens/Seller/addCarImage.dart';
 import 'package:mazadcar/Screens/tabControllerScreen.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
           scaffoldMessengerKey: Utils.messengerKey,
           title: 'MazadCar',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.blueGrey,
           ),
           initialRoute: '/',
           routes: {
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
             '/forgotPassword': (ctx) => ForgotPassword(),
             '/filterCars': (ctx) => FilterScreen(),
             '/carAdPage': (dummyctx) => CarAdPage(),
+            "/myAds": (ctx) => MyCars()
           },
         ));
   }
