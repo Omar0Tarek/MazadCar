@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,22 +10,30 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mazadcar/Chat/cameraPage.dart';
+import 'package:mazadcar/Chat/targetAD.dart';
+import 'package:mazadcar/Chat/targetuserInfo.dart';
+import 'package:mazadcar/Models/car.dart';
 import 'package:mazadcar/Models/chat.dart';
 import 'package:mazadcar/Models/message.dart';
 import 'package:mazadcar/Models/userModel.dart';
+import 'package:mazadcar/Widgets/previewImage.dart';
 import 'package:mazadcar/Widgets/showMessage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_util.dart';
 
 class ChatPage extends StatefulWidget {
   final UserModel targetuser;
+  final UserModel currentUser;
   final Chat chat;
+  final Car ad;
 
-  const ChatPage({
-    Key? key,
-    required this.targetuser,
-    required this.chat,
-  }) : super(key: key);
+  const ChatPage(
+      {Key? key,
+      required this.targetuser,
+      required this.chat,
+      required this.currentUser,
+      required this.ad});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -87,17 +97,18 @@ class _ChatPageState extends State<ChatPage> {
                   height: 15,
                 ),
                 ListTile(
-                  onTap: () {
-                    // Navigator.pop(context);
-                    // await availableCameras().then((value) => Navigator.push(
-                    //         context, MaterialPageRoute(builder: (context) {
-                    //       return CameraPage(
-                    //         cameras: value,
-                    //         chatroom: widget.chatroom,
-                    //         currentuser: widget.currentuser,
-                    //         targetuser: widget.targetuser,
-                    //       );
-                    //     })));
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await availableCameras().then((value) => Navigator.push(
+                            context, MaterialPageRoute(builder: (context) {
+                          return CameraPage(
+                            cameras: value,
+                            chatroom: widget.chat,
+                            currentuser: widget.currentUser,
+                            targetuser: widget.targetuser,
+                            ad: widget.ad,
+                          );
+                        })));
                   },
                   leading: Icon(
                     Icons.camera_alt,
@@ -130,20 +141,20 @@ class _ChatPageState extends State<ChatPage> {
       compressQuality: 20,
     ));
 
-    // if (cropedImage != null) {
-    //   setState(() {
-    //     imagefile = XFile(cropedImage.path);
-    //   });
-    //   Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (context) => PreviewImage(
-    //                 picture: imagefile,
-    //                 chat: widget.chat.id,
-    //                 currentuser: widget.currentuser,
-    //                 targetuser: widget.targetuser,
-    //               )));
-    // }
+    if (cropedImage != null) {
+      setState(() {
+        imagefile = XFile(cropedImage.path);
+      });
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PreviewImage(
+                  picture: imagefile,
+                  chatroom: widget.chat,
+                  currentuser: widget.currentUser,
+                  targetuser: widget.targetuser,
+                  ad: widget.ad)));
+    }
   }
 
   TextEditingController msgcontroller = TextEditingController();
@@ -151,12 +162,13 @@ class _ChatPageState extends State<ChatPage> {
   void sendmessage() async {
     String message = msgcontroller.text.trim();
     msgcontroller.clear();
+    print(message);
     if (message != "") {
       Message newMessage = Message(
-        id: Uuid().v1(),
+        id: const Uuid().v1(),
         content: message,
         senderID: FirebaseAuth.instance.currentUser!.uid,
-        senderName: FirebaseAuth.instance.currentUser!.displayName!,
+        senderName: widget.currentUser.name,
         timeStamp: DateTime.now(),
       );
 
@@ -198,6 +210,28 @@ class _ChatPageState extends State<ChatPage> {
       child: Scaffold(
         backgroundColor: Color(0xffF5F5F5),
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: ((context) {
+                        return FirebaseAuth.instance.currentUser!.uid ==
+                                widget.ad.sellerId
+                            ? TargetUser(
+                                targetUser: widget.targetuser, ad: widget.ad)
+                            : TargetAD(targetAD: widget.ad);
+                      }),
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.info,
+                  color: Colors.black,
+                ))
+          ],
+          shape: Border(bottom: BorderSide(color: Colors.black, width: 1)),
           shadowColor: Colors.transparent,
           toolbarHeight: 70,
           elevation: 5,
@@ -211,12 +245,15 @@ class _ChatPageState extends State<ChatPage> {
             child: Row(
               children: [
                 SizedBox(
-                  width: 65,
+                  width: 45,
                   height: 70,
                   child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage:
-                        NetworkImage(widget.targetuser.profilepic.toString()),
+                    radius: 35,
+                    backgroundImage: FirebaseAuth.instance.currentUser!.uid ==
+                            widget.ad.sellerId
+                        ? NetworkImage(widget.targetuser.profilepic.toString())
+                        : NetworkImage(
+                            jsonDecode(widget.ad.imageURL)[0].toString()),
                     //  child: Image.network(widget.image!),
                   ),
                 ),
@@ -228,9 +265,16 @@ class _ChatPageState extends State<ChatPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      widget.targetuser.name.toString(),
+                      FirebaseAuth.instance.currentUser!.uid ==
+                              widget.ad.sellerId
+                          ? widget.targetuser.name.toString()
+                          : widget.ad.make +
+                              " " +
+                              widget.ad.model +
+                              " " +
+                              widget.ad.year,
                       style: GoogleFonts.inter(
-                        fontSize: 20,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                         color: Color(0xff222222),
                       ),
@@ -243,25 +287,6 @@ class _ChatPageState extends State<ChatPage> {
               ],
             ),
           ),
-          // actions: [
-          //   Row(
-          //     children: [
-          //       Image.asset(
-          //         'assets/images/video.png',
-          //         height: 35,
-          //         width: 35,
-          //       ),
-          //       const SizedBox(
-          //         width: 6,
-          //       ),
-          //       Image.asset(
-          //         'assets/images/more.png',
-          //         height: 35,
-          //         width: 35,
-          //       ),
-          //     ],
-          //   ),
-          // ],
         ),
         body: Container(
           child: Column(
@@ -299,6 +324,7 @@ class _ChatPageState extends State<ChatPage> {
                         ],
                       ),
                       child: TextFormField(
+                        autofocus: true,
                         keyboardAppearance: Brightness.dark,
                         //textInputAction: TextInputAction.continueAction,
                         controller: msgcontroller,
@@ -315,35 +341,15 @@ class _ChatPageState extends State<ChatPage> {
                             top: 19,
                             left: 20,
                           ),
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 0, left: 10, right: 10),
-                            child: GestureDetector(
-                              onTap: () {
-                                EmojiPicker();
-                              },
-                              child: Image.asset(
-                                "assets/images/smile.png",
-                                color: Colors.black,
-                                height: 27,
-                                width: 27,
-                              ),
-                            ),
-                          ),
-                          suffixIcon: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 0, left: 3, right: 15),
-                            child: InkWell(
-                              onTap: () {
-                                showPhotoOptions();
-                              },
-                              child: Image.asset(
-                                "assets/images/camera.png",
-                                height: 27,
-                                width: 27,
-                              ),
-                            ),
-                          ),
+                          // suffixIcon: Padding(
+                          //   padding: const EdgeInsets.only(
+                          //       top: 0, left: 3, right: 15),
+                          //   child: InkWell(
+                          //       onTap: () {
+                          //         showPhotoOptions();
+                          //       },
+                          //       child: Icon(Icons.attach_file_sharp)),
+                          // ),
                         ),
                       ),
                     ),
@@ -358,16 +364,17 @@ class _ChatPageState extends State<ChatPage> {
                         onPressed: () {},
                         child: ElevatedButton(
                           onPressed: () {
+                            print("yes");
                             sendmessage();
                           },
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Color(0xffFFFFFF),
-                            backgroundColor: Color(0xff2865DC),
+                            backgroundColor: Colors.black,
                             shape: CircleBorder(),
                             disabledForegroundColor:
-                                Color(0xff2865DC).withOpacity(0.38),
+                                Colors.black.withOpacity(0.38),
                             disabledBackgroundColor:
-                                Color(0xff2865DC).withOpacity(0.12),
+                                Colors.black.withOpacity(0.12),
                             padding: EdgeInsets.all(10),
                           ),
                           child: Image.asset(

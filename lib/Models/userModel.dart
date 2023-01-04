@@ -14,9 +14,6 @@ class UserModel {
 
   static UserModel constructFromFirebase(
       Map<dynamic, dynamic> data, String id) {
-    print("This is the data:");
-    print(data);
-
     return UserModel(
       id: id,
       name: data['name'] ?? "",

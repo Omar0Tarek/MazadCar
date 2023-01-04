@@ -5,7 +5,7 @@ class Message {
 
   final DateTime timeStamp;
 
-  final String content;
+  final String? content;
 
   final String? image;
 
@@ -14,7 +14,7 @@ class Message {
       required this.senderName,
       required this.senderID,
       required this.timeStamp,
-      required this.content,
+      this.content,
       this.image});
 
   static Message constructFromFirebase(Map<dynamic, dynamic> data, String id) {

@@ -23,8 +23,16 @@ class _CarAdPageState extends State<CarAdPage> {
     Car car = routeArgs['car']!;
 
     addBid() {
+      if (bidValue.text.isEmpty) {
+        // You must enter a valid bid price
+      }
+      int bidPrice = int.parse(bidValue.text);
+      if (bidPrice <= car.getHighestBid()) {
+        // New bid should be higher than the current highest bid
+      }
+
       String biddingUserID = FirebaseAuth.instance.currentUser!.uid;
-      car.addBid(biddingUserID, int.parse(bidValue.text));
+      car.addBid(biddingUserID, bidPrice);
       FirebaseFirestore.instance
           .collection("cars")
           .doc(car.id)
@@ -33,6 +41,21 @@ class _CarAdPageState extends State<CarAdPage> {
           })
           .catchError((err) {})
           .then((_) {});
+    }
+
+    cancelBid() {
+      String biddingUserID = FirebaseAuth.instance.currentUser!.uid;
+      if (car.userHasBid(biddingUserID)) {
+        car.cancelUserBid(biddingUserID);
+        FirebaseFirestore.instance
+            .collection("cars")
+            .doc(car.id)
+            .update({
+              'bids': car.bids,
+            })
+            .catchError((err) {})
+            .then((_) {});
+      }
     }
 
     getNameRow(String name) {
@@ -169,6 +192,7 @@ class _CarAdPageState extends State<CarAdPage> {
                       padding: EdgeInsets.all(5),
                       margin: EdgeInsets.all(5),
                       child: TextField(
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(labelText: "Bid Price"),
                         controller: bidValue,
                       ),
@@ -183,6 +207,14 @@ class _CarAdPageState extends State<CarAdPage> {
                     child: Text('Bid'),
                   )
                 ],
+              ),
+              TextButton(
+                style: ButtonStyle(
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                ),
+                onPressed: () => cancelBid(),
+                child: Text('Cancel Bid'),
               ),
               const SizedBox(
                 height: 15,

@@ -34,7 +34,7 @@ class _chatTabCarState extends State<ChatTabBar>
 
   @override
   Widget build(BuildContext context) {
-    return new DefaultTabController(
+    return DefaultTabController(
         length: 2,
         child: new Scaffold(
           appBar: AppBar(
