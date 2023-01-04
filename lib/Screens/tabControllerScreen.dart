@@ -44,15 +44,17 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed('/filterCars');
-            },
-            icon: Icon(
-              Icons.filter_alt,
-              color: Colors.black,
-            ),
-          ),
+          selectedTabIndex == 0
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/filterCars');
+                  },
+                  icon: Icon(
+                    Icons.filter_alt,
+                    color: Colors.black,
+                  ),
+                )
+              : Text(''),
           IconButton(
             onPressed: () {
               Navigator.of(context).pushNamed('/profile');
