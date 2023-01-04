@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mazadcar/Screens/Buyer/BidsPlaced.dart';
 import 'package:mazadcar/Screens/Seller/soldCars.dart';
 
 class MyTabbedPage extends StatefulWidget {
@@ -10,8 +11,8 @@ class MyTabbedPage extends StatefulWidget {
 class _MyTabbedPageState extends State<MyTabbedPage>
     with SingleTickerProviderStateMixin {
   static const List<Tab> myTabs = <Tab>[
-    Tab(text: 'SoldCars'),
-    Tab(text: 'BoughtCars'),
+    Tab(text: 'Ads Placed'),
+    Tab(text: 'Bids Placed'),
   ];
 
   late TabController _tabController;
@@ -49,15 +50,9 @@ class _MyTabbedPageState extends State<MyTabbedPage>
             controller: _tabController,
             children: myTabs.map((Tab tab) {
               final String label = tab.text!.toLowerCase();
-              print(label);
-              return label.compareTo("soldcars") == 0
+              return label.compareTo("ads placed") == 0
                   ? SoldCars()
-                  : Center(
-                      child: Text(
-                        'This is the Bought Cars tab',
-                        style: const TextStyle(fontSize: 36),
-                      ),
-                    );
+                  : BidsPlaced();
             }).toList(),
           ),
         ));
