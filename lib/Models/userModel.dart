@@ -4,7 +4,6 @@ class UserModel {
   String phone;
   String name;
   String profilepic;
-  Map<String, int> carAdsWithBids = {};
 
   UserModel(
       {required this.id,
@@ -12,14 +11,6 @@ class UserModel {
       required this.phone,
       required this.profilepic,
       required this.name});
-
-  removeCarAdBid(String carAdId) {
-    carAdsWithBids.remove(carAdId);
-  }
-
-  addCarAdBid(String carAdId, int bidValue) {
-    carAdsWithBids[carAdId] = bidValue;
-  }
 
   static UserModel constructFromFirebase(
       Map<dynamic, dynamic> data, String id) {
