@@ -55,7 +55,8 @@ class _RegisterPageState extends State<RegisterPage> {
           .set({
         'name': nameController.text.trim(),
         'email': emailController.text.trim(),
-        'phone': phoneController.text.trim()
+        'phone': phoneController.text.trim(),
+        'carAdsWithBids': {},
       });
     } on FirebaseException catch (e) {
       print(e.message);
