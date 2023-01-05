@@ -14,11 +14,18 @@ import 'package:provider/provider.dart';
 import 'Chat/chatTabBar.dart';
 import 'Screens/Auth/AuthPage.dart';
 import 'Screens/Auth/ForgotPassword.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(background_notif_handler);
   runApp(const MyApp());
+}
+
+Future<void> background_notif_handler(RemoteMessage message) async {
+//await Firebase.initializeApp();
+  print("Handling a background message: ${message.data}");
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
