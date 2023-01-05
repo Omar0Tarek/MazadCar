@@ -316,6 +316,39 @@ class _CarAdPageState extends State<CarAdPage> {
       );
     }
 
+    if (FirebaseAuth.instance.currentUser == null) {
+      return Scaffold(
+        appBar: AppBar(
+          leading: BackButton(
+            color: Colors.black,
+          ),
+          backgroundColor: Colors.white,
+          title: Container(
+            margin: EdgeInsets.all(15),
+            padding: EdgeInsets.only(left: 10, bottom: 20, top: 10),
+            child: Image.asset(
+              'assets/images/logo.png',
+            ),
+          ),
+        ),
+        body: SizedBox(
+          height: 200,
+          child: Container(
+            margin: EdgeInsets.all(20),
+            padding: EdgeInsets.all(20),
+            child: Center(
+                child: Text(
+              "Sign in to Start",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 30),
+            )),
+          ),
+        ),
+      );
+    }
+
     String currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
     return FutureBuilder(
