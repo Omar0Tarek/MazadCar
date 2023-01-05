@@ -40,48 +40,36 @@ class _SavedState extends State<Saved> {
   }
 
   Widget build(BuildContext context) {
-    // if(FirebaseAuth.instance.currentUser!=null)
-    // {
-
-    // }
-    var savedInstances = FirebaseAuth.instance.currentUser != null
-        ? FirebaseFirestore.instance
-            .collection("users")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection("saved")
-        : null;
-    var myStream = FirebaseAuth.instance.currentUser != null
-        ? savedInstances!.snapshots()
-        : null;
+    var savedInstances = FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("saved");
+    var myStream = savedInstances.snapshots();
 
     return Container(
-      child: FirebaseAuth.instance.currentUser != null
-          ? StreamBuilder(
-              stream: myStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.active) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                      ),
-                    );
-                  } else {
-                    QuerySnapshot savedSnapshot =
-                        snapshot.data as QuerySnapshot;
-                    var savedList = snapshot.data!.docs;
-                    // print(chatList);
-                    return ListView.builder(
-                      padding: EdgeInsets.all(10.0),
-                      itemBuilder: (context, index) {
-                        return FutureBuilder(
-                            future:
-                                getCarModel(savedList[index].data()["carId"]),
-                            builder: (context, userdata) {
-                              if (userdata.connectionState ==
-                                  ConnectionState.done) {
-                                if (userdata.data != null) {
-                                  Car carAD = userdata.data as Car;
+      child: StreamBuilder(
+        stream: myStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                ),
+              );
+            } else {
+              QuerySnapshot savedSnapshot = snapshot.data as QuerySnapshot;
+              var savedList = snapshot.data!.docs;
+              // print(chatList);
+              return ListView.builder(
+                padding: EdgeInsets.all(10.0),
+                itemBuilder: (context, index) {
+                  return FutureBuilder(
+                      future: getCarModel(savedList[index].data()["carId"]),
+                      builder: (context, userdata) {
+                        if (userdata.connectionState == ConnectionState.done) {
+                          if (userdata.data != null) {
+                            Car carAD = userdata.data as Car;
 
                             return MainCarCard(
                               car: carAD,
@@ -102,7 +90,12 @@ class _SavedState extends State<Saved> {
               child: CircularProgressIndicator(
                 color: Colors.black,
               ),
-            ),
+            );
+          } else {
+            return Center(child: Text("Error: Check Internet Connection"));
+          }
+        },
+      ),
     );
   }
 }

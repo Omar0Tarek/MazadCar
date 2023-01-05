@@ -77,6 +77,34 @@ class _MainCarCardState extends State<MainCarCard> {
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.end,
+                  //   children: [
+                  //     isSaved!
+                  //         ? IconButton(
+                  //             onPressed: () {
+                  //               FirebaseFirestore.instance
+                  //                   .collection("users")
+                  //                   .doc(FirebaseAuth.instance.currentUser!.uid)
+                  //                   .collection("saved")
+                  //                   .doc(widget.car.id)
+                  //                   .delete();
+                  //               checkIfSavedOrNot().then((value) {
+                  //                 setState(() {});
+                  //               });
+                  //             },
+                  //             icon: Icon(Icons.bookmark))
+                  //         : IconButton(
+                  //             onPressed: () {
+                  //               addToSaved(widget.car.id);
+                  //               checkIfSavedOrNot().then((value) {
+                  //                 setState(() {});
+                  //               });
+                  //             },
+                  //             icon: Icon(Icons.bookmark_outline),
+                  //           ),
+                  //   ],
+                  // ),
                   Divider(
                     color: Colors.black,
                     height: 5,
@@ -88,9 +116,12 @@ class _MainCarCardState extends State<MainCarCard> {
                       Container(
                         height: 160,
                         width: 130,
-                        child: Image.network(
-                          jsonDecode(widget.car.imageURL)[0],
-                          fit: BoxFit.cover,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.network(
+                            jsonDecode(widget.car.imageURL)[0],
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -105,7 +136,8 @@ class _MainCarCardState extends State<MainCarCard> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    widget.car.name,
+                                    '${widget.car.make} ${widget.car.model} ${widget.car.year}'
+                                        .toUpperCase(),
                                     overflow: TextOverflow.fade,
                                     style: const TextStyle(
                                       fontSize: 16,
@@ -113,6 +145,30 @@ class _MainCarCardState extends State<MainCarCard> {
                                     ),
                                   ),
                                 ),
+                                isSaved!
+                                    ? IconButton(
+                                        onPressed: () {
+                                          FirebaseFirestore.instance
+                                              .collection("users")
+                                              .doc(FirebaseAuth
+                                                  .instance.currentUser!.uid)
+                                              .collection("saved")
+                                              .doc(widget.car.id)
+                                              .delete();
+                                          checkIfSavedOrNot().then((value) {
+                                            setState(() {});
+                                          });
+                                        },
+                                        icon: Icon(Icons.bookmark))
+                                    : IconButton(
+                                        onPressed: () {
+                                          addToSaved(widget.car.id);
+                                          checkIfSavedOrNot().then((value) {
+                                            setState(() {});
+                                          });
+                                        },
+                                        icon: Icon(Icons.bookmark_outline),
+                                      ),
                               ],
                             ),
                             SizedBox(
@@ -288,33 +344,6 @@ class _MainCarCardState extends State<MainCarCard> {
                     height: 5,
                     thickness: 1,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      isSaved!
-                          ? IconButton(
-                              onPressed: () {
-                                FirebaseFirestore.instance
-                                    .collection("users")
-                                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                                    .collection("saved")
-                                    .doc(widget.car.id)
-                                    .delete();
-                                checkIfSavedOrNot().then((value) {
-                                  setState(() {});
-                                });
-                              },
-                              icon: Icon(Icons.bookmark))
-                          : IconButton(
-                              onPressed: () {
-                                addToSaved(widget.car.id);
-                                checkIfSavedOrNot().then((value) {
-                                  setState(() {});
-                                });
-                              },
-                              icon: Icon(Icons.bookmark_outline))
-                    ],
-                  )
                 ],
               ),
             ),
