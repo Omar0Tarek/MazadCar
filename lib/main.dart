@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import "package:firebase_core/firebase_core.dart";
+import 'package:mazadcar/Chat/buyerChat.dart';
 import 'package:mazadcar/Providers/filter.dart';
 import 'package:mazadcar/Screens/Auth/Utils.dart';
 import 'package:mazadcar/Screens/Common/filterScreen.dart';
@@ -10,6 +11,7 @@ import 'package:mazadcar/Screens/Seller/addCarImage.dart';
 import 'package:mazadcar/Screens/tabControllerScreen.dart';
 import 'package:provider/provider.dart';
 
+import 'Chat/chatTabBar.dart';
 import 'Screens/Auth/AuthPage.dart';
 import 'Screens/Auth/ForgotPassword.dart';
 
@@ -46,6 +48,7 @@ class MyApp extends StatelessWidget {
             '/forgotPassword': (ctx) => ForgotPassword(),
             '/filterCars': (ctx) => FilterScreen(),
             '/carAdPage': (dummyctx) => CarAdPage(),
+            '/chat': (dummyctx) => ChatTabBar(),
           },
         ));
   }

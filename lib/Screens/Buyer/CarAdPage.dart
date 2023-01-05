@@ -130,13 +130,16 @@ class _CarAdPageState extends State<CarAdPage> {
 
     void chatWithSeller() {
       String biddingUserID = FirebaseAuth.instance.currentUser!.uid;
-      FirebaseFirestore.instance.collection("chats").add({
+      String chatId = '${car.sellerId}${biddingUserID}${car.id}';
+      FirebaseFirestore.instance.collection("chats").doc(chatId).set({
         'sellerID': car.sellerId,
         'buyerID': biddingUserID,
         'adID': car.id,
         'adName': car.name,
+        'lastMessage': "Chat with seller!",
+        'lastMessageDate': DateTime.now(),
       }).then((documentSnapshot) {
-        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+        Navigator.of(context).pushNamed('/chat');
       }).catchError((err) {
         return showDialog(
             context: context,

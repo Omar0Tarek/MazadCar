@@ -13,8 +13,8 @@ class ChatTabBar extends StatefulWidget {
 class _chatTabCarState extends State<ChatTabBar>
     with SingleTickerProviderStateMixin {
   static const List<Tab> myTabs = <Tab>[
-    Tab(text: 'Interested Buyers'),
     Tab(text: 'Car Requests'),
+    Tab(text: 'Interested Buyers'),
   ];
 
   late TabController _tabController;
