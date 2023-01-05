@@ -89,7 +89,7 @@ class _SavedState extends State<Saved> {
                                       car: carAD,
                                     );
                                   } else {
-                                    return Text("User data is null");
+                                    return Text("");
                                   }
                                 } else {
                                   return Text("");

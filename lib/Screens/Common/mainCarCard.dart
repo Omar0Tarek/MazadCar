@@ -354,7 +354,7 @@ class _MainCarCardState extends State<MainCarCard> {
                                       'Time left: $deadline',
                                       textAlign: TextAlign.end,
                                       style: TextStyle(
-                                        fontSize: 14.5,
+                                        fontSize: 13,
                                         fontWeight: FontWeight.w800,
                                         // backgroundColor: Color(0xFFFEC260),
                                         color: Color(0xFFA10035),
