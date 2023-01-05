@@ -73,7 +73,6 @@ class _SavedState extends State<Saved> {
 
                             return MainCarCard(
                               car: carAD,
-                              saved: true,
                             );
                           } else {
                             return Text("User data is null");

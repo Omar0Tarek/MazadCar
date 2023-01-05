@@ -69,9 +69,6 @@ class Car {
   }
 
   static Car constructFromFirebase(Map<dynamic, dynamic> data, String id) {
-    print("This is the data:");
-    print(data);
-    print(data['bids']);
     // print(jsonDecode(data['bids']));
     return Car(
       id: id,

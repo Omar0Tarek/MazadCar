@@ -60,12 +60,16 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
-                  child: const Text(
-                    'MazadCar',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 30),
+                  child: Container(
+                    margin: EdgeInsets.all(15),
+                    padding:
+                        //  selectedTabIndex == 0
+                        //     ? EdgeInsets.only(left: 75, bottom: 20, top: 10)
+                        //     :
+                        EdgeInsets.only(left: 55, bottom: 20, top: 10),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                    ),
                   )),
               Container(
                   alignment: Alignment.center,

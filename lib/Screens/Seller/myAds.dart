@@ -84,12 +84,12 @@ class _MyAdsState extends State<MyAds> {
                       Container(
                         margin: EdgeInsets.all(10),
                         child: Text(
-                          "Old ADs",
+                          "Old ADs:",
                           overflow: TextOverflow.fade,
                           softWrap: true,
                           style: const TextStyle(
                             color: Color.fromARGB(255, 159, 11, 11),
-                            fontSize: 27,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -218,12 +218,12 @@ class _MyAdsState extends State<MyAds> {
                       Container(
                         margin: EdgeInsets.all(10),
                         child: Text(
-                          "On Going Ads",
+                          "On Going Ads:",
                           softWrap: true,
                           overflow: TextOverflow.fade,
                           style: const TextStyle(
                             color: Color.fromARGB(255, 159, 11, 11),
-                            fontSize: 27,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

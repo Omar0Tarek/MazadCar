@@ -126,7 +126,7 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
             ),
             IconButton(
               icon: Icon(
-                Icons.saved_search_outlined,
+                Icons.bookmark,
                 color: Colors.white,
               ),
               onPressed: () {

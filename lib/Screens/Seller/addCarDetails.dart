@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -394,6 +395,10 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           child: TextField(
                             decoration: InputDecoration(labelText: "Year"),
                             controller: yearValue,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                           ),
                         ),
                       ),
@@ -408,6 +413,10 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           child: TextField(
                             decoration: InputDecoration(labelText: "Mileage"),
                             controller: mileageValue,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                           ),
                         ),
                       ),
@@ -429,6 +438,10 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                             decoration:
                                 InputDecoration(labelText: "Start Price"),
                             controller: startPriceValue,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                           ),
                         ),
                       ),

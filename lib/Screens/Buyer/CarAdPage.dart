@@ -248,7 +248,7 @@ class _CarAdPageState extends State<CarAdPage> {
     String currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
     return FutureBuilder(
-      future: getUserModelbyId(currentUserId),
+      future: getUserModelbyId(car.sellerId),
       builder: (context, userdata) {
         if (userdata.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -256,7 +256,7 @@ class _CarAdPageState extends State<CarAdPage> {
           );
         }
 
-        var currentUser = userdata.data as UserModel;
+        var currentSeller = userdata.data as UserModel;
 
         return Scaffold(
           extendBodyBehindAppBar: true,
@@ -417,7 +417,7 @@ class _CarAdPageState extends State<CarAdPage> {
                     thickness: 0.8,
                   ),
                   getSectionName("Seller"),
-                  getSellerSection(currentUser),
+                  getSellerSection(currentSeller),
                 ],
               ),
             ),

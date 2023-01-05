@@ -19,6 +19,9 @@ class _AvailableCarsState extends State<AvailableCars> {
   @override
   Widget build(BuildContext context) {
     final filterProvider = Provider.of<FilterProvider>(context);
+    void removeFilter() {
+      filterProvider.applyFilter(new Map());
+    }
 
     var carInstances = FirebaseFirestore.instance.collection("cars").where(
         "sellerId",
@@ -45,11 +48,10 @@ class _AvailableCarsState extends State<AvailableCars> {
 
         Iterable<Car> carList = carDocs.map(
             (e) => Car.constructFromFirebase(e.data() as Map, e.reference.id));
-        Iterable<Car> filteredCars;
+        Iterable<Car> filteredCars = carList;
         var filter;
         if (filterProvider.filter.isNotEmpty) {
           filter = filterProvider.filter;
-          filteredCars = carList;
 
           if (filter['make'] != null && filter['make'].toString() != 'All') {
             filteredCars = filteredCars
@@ -64,30 +66,69 @@ class _AvailableCarsState extends State<AvailableCars> {
             filteredCars = filteredCars
                 .where((car) => (filter['maxMileage'] >= car.mileage));
           }
+          if (filter['maxPrice'] != null) {
+            filteredCars = filteredCars
+                .where((car) => (filter['maxPrice'] >= car.getHighestBid()));
+          }
           if (filter['transmission'] != null &&
               filter['transmission'].toString() != 'All') {
             filteredCars = filteredCars.where((car) =>
                 (filter['transmission'].toString().toLowerCase() ==
-                    car.transmission.toLowerCase()));
+                    car.engine.toLowerCase()));
           }
         } else {
           filteredCars = carList;
         }
-        return ListView.builder(
-          itemBuilder: (itemCtx, index) {
-            Car car = filteredCars.elementAt(index);
-            // var snap = FirebaseFirestore.instance
-            //     .collection('users')
-            //     .doc(FirebaseAuth.instance.currentUser!.uid)
-            //     .collection("saved");
-            // snap.doc()
+        return Column(
+          children: [
+            filterProvider.filter.isNotEmpty
+                ? Container(
+                    height: 30,
+                    width: 160,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Color(0xFF006E7F))),
+                      child: Row(
+                        children: [Text('Remove Filter'), Icon(Icons.close)],
+                      ),
+                      onPressed: () {
+                        removeFilter();
+                      },
+                    ))
+                : Text(''),
+            Expanded(
+                child: filteredCars.isNotEmpty
+                    ? ListView.builder(
+                        itemBuilder: (itemCtx, index) {
+                          Car car = filteredCars.elementAt(index);
+                          // var snap = FirebaseFirestore.instance
+                          //     .collection('users')
+                          //     .doc(FirebaseAuth.instance.currentUser!.uid)
+                          //     .collection("saved");
+                          // snap.doc()
 
-            return MainCarCard(
-              car: car,
-              saved: false,
-            );
-          },
-          itemCount: filteredCars.length,
+                          return MainCarCard(
+                            car: car,
+                          );
+                        },
+                        itemCount: filteredCars.length,
+                      )
+                    : Container(
+                        margin: EdgeInsets.all(130),
+                        child: Text(
+                          "No results found",
+                          softWrap: true,
+                          overflow: TextOverflow.fade,
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 159, 11, 11),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ))
+          ],
         );
       },
     );

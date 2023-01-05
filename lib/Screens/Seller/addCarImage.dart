@@ -148,7 +148,7 @@ class _addCarImagesState extends State<addCarImages> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text('ADD Car Images'),
+          title: Text('Upload Car Images'),
         ),
         floatingActionButton: FloatingActionButton(
             backgroundColor: imageFileList!.isEmpty
