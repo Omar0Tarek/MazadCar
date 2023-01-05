@@ -50,7 +50,7 @@ class _TabControllerScreenState extends State<TabControllerScreen> {
                     Navigator.of(context).pushNamed('/filterCars');
                   },
                   icon: Icon(
-                    Icons.filter_alt,
+                    Icons.search,
                     color: Colors.black,
                   ),
                 )
