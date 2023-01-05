@@ -137,8 +137,8 @@ class _AvailableCarsState extends State<AvailableCars> {
                           margin: EdgeInsets.all(130),
                           child: Text(
                             "No results found",
-                            softWrap: true,
-                            overflow: TextOverflow.fade,
+                            // softWrap: true,
+                            // overflow: TextOverflow.fade,
                             style: const TextStyle(
                               color: Color.fromARGB(255, 159, 11, 11),
                               fontSize: 20,

@@ -50,10 +50,6 @@ class _FilterScreenState extends State<FilterScreen> {
       appliedTransmission = filter['transmission'];
       appliedFilter['transmission'] = filter['transmission'];
     }
-    if (filter['location'] != null && (appliedFilter['location'] == null)) {
-      appliedLocation = filter['location'];
-      appliedFilter['location'] = filter['location'];
-    }
     if (filter['maxMileage'] != null) {
       appliedMileage = filter['maxMileage'].toString();
       appliedFilter['maxMileage'] = filter['maxMileage'];
