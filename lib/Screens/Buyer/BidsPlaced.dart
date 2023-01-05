@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mazadcar/Models/car.dart';
+import 'package:mazadcar/Screens/Common/Saved.dart';
 import 'package:mazadcar/Screens/Common/carCard.dart';
+
+import '../Common/mainCarCard.dart';
 
 class BidsPlaced extends StatefulWidget {
   const BidsPlaced({super.key});
@@ -40,7 +43,7 @@ class _BidsPlacedState extends State<BidsPlaced> {
               return ListView.builder(
                 itemBuilder: (itemCtx, index) {
                   Car car = filteredCars.elementAt(index);
-                  return CarCard(car: car);
+                  return MainCarCard(car: car);
                 },
                 itemCount: filteredCars.length,
               );

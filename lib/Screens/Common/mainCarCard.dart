@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,20 @@ class MainCarCard extends StatefulWidget {
 
 class _MainCarCardState extends State<MainCarCard> {
   bool? isSaved;
+
+  Timer? timer;
+  String deadline = "";
+
+  void initTimer() {
+    if (timer != null && timer!.isActive) return;
+
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        deadline = widget.car.getCountDown().toString();
+      });
+    });
+  }
+
   Future<void> checkIfSavedOrNot() async {
     DocumentSnapshot ds = await FirebaseFirestore.instance
         .collection("users")
@@ -58,6 +73,7 @@ class _MainCarCardState extends State<MainCarCard> {
 
   @override
   Widget build(BuildContext context) {
+    initTimer();
     return isSaved == null
         ? SizedBox(
             height: 130,
@@ -114,8 +130,8 @@ class _MainCarCardState extends State<MainCarCard> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        height: 160,
-                        width: 130,
+                        height: 140,
+                        width: 120,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
                           child: Image.network(
@@ -318,7 +334,7 @@ class _MainCarCardState extends State<MainCarCard> {
                                   child: Container(
                                     padding: EdgeInsets.only(right: 5, top: 5),
                                     child: Text(
-                                      'Time left: ${widget.car.getCountDown().toString()}',
+                                      'Time left: $deadline',
                                       textAlign: TextAlign.end,
                                       style: TextStyle(
                                         fontSize: 14.5,

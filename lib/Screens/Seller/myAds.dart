@@ -8,6 +8,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:mazadcar/Models/car.dart';
 import 'package:mazadcar/Screens/Common/carCard.dart';
+import 'package:mazadcar/Screens/Common/mainCarCard.dart';
 
 class MyAds extends StatefulWidget {
   const MyAds({super.key});
@@ -260,7 +261,7 @@ class _MyAdsState extends State<MyAds> {
                                 color: Colors.black),
                             child: Column(
                               children: [
-                                CarCard(car: car),
+                                MainCarCard(car: car),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [

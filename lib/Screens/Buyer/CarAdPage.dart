@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,10 +18,21 @@ class CarAdPage extends StatefulWidget {
 class _CarAdPageState extends State<CarAdPage> {
   final bidValue = TextEditingController();
   bool _makeBid = false;
+  var errorText;
+  Color errorColor = Colors.red;
+  var placedBid = false;
+
+  Timer? timer;
+  String deadline = "";
+
+  bool loaded = false;
 
   void showToast() {
     setState(() {
       _makeBid = !_makeBid;
+      setState(() {
+        errorText = "";
+      });
     });
   }
 
@@ -45,13 +57,31 @@ class _CarAdPageState extends State<CarAdPage> {
         ModalRoute.of(context)!.settings.arguments as Map<String, Car>;
     Car car = routeArgs['car']!;
 
+    void initTimer() {
+      if (timer != null && timer!.isActive) return;
+
+      timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          deadline = car.getCountDown().toString();
+        });
+      });
+    }
+
     addBid() {
       if (bidValue.text.isEmpty) {
-        // You must enter a valid bid price
+        setState(() {
+          errorText = "You must enter a valid bid price";
+          errorColor = Colors.red;
+        });
+        return;
       }
       int bidPrice = int.parse(bidValue.text);
       if (bidPrice <= car.getHighestBid()) {
-        // New bid should be higher than the current highest bid
+        setState(() {
+          errorText = "New bid should be higher than the current highest bid";
+          errorColor = Colors.red;
+        });
+        return;
       }
 
       String biddingUserID = FirebaseAuth.instance.currentUser!.uid;
@@ -63,7 +93,14 @@ class _CarAdPageState extends State<CarAdPage> {
             'bids': car.bids,
           })
           .catchError((err) {})
-          .then((_) {});
+          .then((_) {
+            setState(() {
+              _makeBid = !_makeBid;
+              errorText = "New bid placed successfully";
+              bidValue.text = "";
+              errorColor = Colors.green;
+            });
+          });
     }
 
     cancelBid() {
@@ -77,7 +114,17 @@ class _CarAdPageState extends State<CarAdPage> {
               'bids': car.bids,
             })
             .catchError((err) {})
-            .then((_) {});
+            .then((_) {
+              setState(() {
+                errorText = "Bid cancelled successfully";
+                errorColor = Colors.green;
+              });
+            });
+      } else {
+        setState(() {
+          errorText = "You didn't bid on the car previously";
+          errorColor = Colors.red;
+        });
       }
     }
 
@@ -147,6 +194,7 @@ class _CarAdPageState extends State<CarAdPage> {
 
     // TO DO: Show Icons
     Widget getDetailsRow(String rowName, String rowValue) {
+      initTimer();
       return Column(
         children: [
           const SizedBox(
@@ -217,7 +265,7 @@ class _CarAdPageState extends State<CarAdPage> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Image.network(
-                jsonDecode(car.imageURL)[0],
+                currentUser.profilepic,
                 fit: BoxFit.cover,
               ),
             ),
@@ -316,18 +364,53 @@ class _CarAdPageState extends State<CarAdPage> {
       );
     }
 
+    if (FirebaseAuth.instance.currentUser == null) {
+      return Scaffold(
+        appBar: AppBar(
+          leading: BackButton(
+            color: Colors.black,
+          ),
+          backgroundColor: Colors.white,
+          title: Container(
+            margin: EdgeInsets.all(15),
+            padding: EdgeInsets.only(left: 10, bottom: 20, top: 10),
+            child: Image.asset(
+              'assets/images/logo.png',
+            ),
+          ),
+        ),
+        body: SizedBox(
+          height: 200,
+          child: Container(
+            margin: EdgeInsets.all(20),
+            padding: EdgeInsets.all(20),
+            child: Center(
+                child: Text(
+              "Sign in to Start",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 30),
+            )),
+          ),
+        ),
+      );
+    }
+
     String currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
     return FutureBuilder(
       future: getUserModelbyId(car.sellerId),
       builder: (context, userdata) {
-        if (userdata.connectionState == ConnectionState.waiting) {
+        if (userdata.connectionState == ConnectionState.waiting && !loaded) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
 
-        var currentSeller = userdata.data as UserModel;
+        loaded = true;
+
+        var currentUser = userdata.data as UserModel;
 
         return Scaffold(
           extendBodyBehindAppBar: true,
@@ -358,7 +441,8 @@ class _CarAdPageState extends State<CarAdPage> {
                         enlargeFactor: 0.3,
                         scrollDirection: Axis.horizontal,
                       ),
-                      items: [1, 2, 3, 4, 5].map((i) {
+                      items:
+                          List<String>.from(jsonDecode(car.imageURL)).map((i) {
                         return Builder(
                           builder: (BuildContext context) {
                             return Container(
@@ -366,7 +450,7 @@ class _CarAdPageState extends State<CarAdPage> {
                               // margin: EdgeInsets.symmetric(horizontal: 5.0),
                               decoration: BoxDecoration(color: Colors.amber),
                               child: Image.network(
-                                jsonDecode(car.imageURL)[0],
+                                i,
                                 fit: BoxFit.cover,
                               ),
                             );
@@ -377,12 +461,14 @@ class _CarAdPageState extends State<CarAdPage> {
                   ),
                   getNameRow((car.make + " " + car.model + " " + car.year)
                       .toUpperCase()),
-                  getDetailsRow(car.payment, car.startDate.toString()),
+                  getSectionName("Bidding"),
                   getDetailsRow("Highest Bid", car.getHighestBid().toString()),
-                  getDetailsRow("Bid End", car.getCountDown().toString()),
-                  ...car.bids.entries.map((e) =>
-                      getDetailsRow('Bid Id: ${e.key}', e.value.toString())),
+                  car.bids.containsKey(currentUserId)
+                      ? getDetailsRow('Your Current Bid:',
+                          car.bids[currentUserId].toString())
+                      : Container(),
 
+                  getDetailsRow("Bid End", deadline),
                   /////////////////////////show when press button////////////////////////
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -393,50 +479,78 @@ class _CarAdPageState extends State<CarAdPage> {
                         // minimumSize: Size.fromHeight(50),
                       ),
                       onPressed: showToast,
-                      child: Text("Make Bid")),
+                      child: Text(
+                        "Make Bid",
+                        style: TextStyle(color: Colors.blue),
+                      )),
 
                   ///
                   Visibility(
-                      visible: _makeBid,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.all(5),
-                                  margin: EdgeInsets.all(5),
-                                  child: TextField(
-                                    keyboardType: TextInputType.number,
-                                    decoration:
-                                        InputDecoration(labelText: "Bid Price"),
-                                    controller: bidValue,
-                                  ),
+                    visible: _makeBid,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                margin: EdgeInsets.all(5),
+                                child: TextField(
+                                  keyboardType: TextInputType.number,
+                                  decoration:
+                                      InputDecoration(labelText: "Bid Price"),
+                                  controller: bidValue,
                                 ),
                               ),
-                              TextButton(
-                                style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.blue),
-                                ),
-                                onPressed: () => addBid(),
-                                child: Text('Bid'),
-                              )
-                            ],
-                          ),
-                          TextButton(
-                            style: ButtonStyle(
-                              foregroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.blue),
                             ),
-                            onPressed: () => cancelBid(),
-                            child: Text('Cancel Bid'),
-                          ),
-                        ],
-                      )),
-
+                            TextButton(
+                              style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.blue),
+                              ),
+                              onPressed: () => addBid(),
+                              child: Text('Bid'),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
 ///////////////////////////////////////till here////////////////////////////
+                  TextButton(
+                    style: ElevatedButton.styleFrom(
+                      textStyle: TextStyle(fontSize: 18),
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(13)),
+                      // minimumSize: Size.fromHeight(50),
+                    ),
+                    // style: ButtonStyle(
+                    //   foregroundColor:
+                    //       MaterialStateProperty.all<Color>(Colors.red),
+                    // ),
+                    onPressed: () => cancelBid(),
+                    child: Text(
+                      'Cancel Bid',
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+
+                  Text.rich(
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    TextSpan(
+                      text: errorText,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: errorColor,
+                      ),
+                    ),
+                  ),
 
                   const SizedBox(
                     height: 15,
@@ -447,11 +561,6 @@ class _CarAdPageState extends State<CarAdPage> {
                     thickness: 0.8,
                   ),
                   getSectionName("Details"),
-                  const Divider(
-                    color: Colors.black,
-                    height: 3,
-                    thickness: 0.8,
-                  ),
                   getDetailsRow("Make", car.make),
                   getDetailsRowDivider(),
                   getDetailsRow("Model", car.model),
@@ -469,7 +578,6 @@ class _CarAdPageState extends State<CarAdPage> {
                   getDetailsRow("Payment Option", car.payment),
                   getDetailsRowDivider(),
                   getDetailsRow("Condition", car.condition),
-                  getDetailsRowDivider(),
                   const SizedBox(
                     height: 15,
                   ),
@@ -478,17 +586,8 @@ class _CarAdPageState extends State<CarAdPage> {
                     height: 3,
                     thickness: 0.8,
                   ),
-                  getSectionName("Description"),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  const Divider(
-                    color: Color(0xFF006E7F),
-                    height: 3,
-                    thickness: 0.8,
-                  ),
                   getSectionName("Seller"),
-                  getSellerSection(currentSeller),
+                  getSellerSection(currentUser),
                 ],
               ),
             ),
