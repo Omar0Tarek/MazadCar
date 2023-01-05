@@ -72,56 +72,63 @@ class _AvailableCarsState extends State<AvailableCars> {
         filteredCars = filteredCars.where((car) {
           return !car.getCountDown().contains('0 H: 0 M: 0 S');
         });
-        return Column(
-          children: [
-            filterProvider.filter.isNotEmpty
-                ? Container(
-                    height: 30,
-                    width: 160,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Color(0xFF006E7F))),
-                      child: Row(
-                        children: [Text('Remove Filter'), Icon(Icons.close)],
-                      ),
-                      onPressed: () {
-                        removeFilter();
-                      },
-                    ))
-                : Text(''),
-            Expanded(
-                child: filteredCars.isNotEmpty
-                    ? ListView.builder(
-                        itemBuilder: (itemCtx, index) {
-                          Car car = filteredCars.elementAt(index);
-                          // var snap = FirebaseFirestore.instance
-                          //     .collection('users')
-                          //     .doc(FirebaseAuth.instance.currentUser!.uid)
-                          //     .collection("saved");
-                          // snap.doc()
-
-                          return MainCarCard(
-                            car: car,
-                          );
-                        },
-                        itemCount: filteredCars.length,
-                      )
-                    : Container(
-                        margin: EdgeInsets.all(130),
-                        child: Text(
-                          "No results found",
-                          softWrap: true,
-                          overflow: TextOverflow.fade,
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 159, 11, 11),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+        return new Scaffold(
+          appBar: AppBar(
+            title: Text("Available Bids"),
+            centerTitle: true,
+            backgroundColor: Colors.black,
+          ),
+          body: Column(
+            children: [
+              filterProvider.filter.isNotEmpty
+                  ? Container(
+                      height: 30,
+                      width: 160,
+                      padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Color(0xFF006E7F))),
+                        child: Row(
+                          children: [Text('Remove Filter'), Icon(Icons.close)],
                         ),
+                        onPressed: () {
+                          removeFilter();
+                        },
                       ))
-          ],
+                  : Text(''),
+              Expanded(
+                  child: filteredCars.isNotEmpty
+                      ? ListView.builder(
+                          itemBuilder: (itemCtx, index) {
+                            Car car = filteredCars.elementAt(index);
+                            // var snap = FirebaseFirestore.instance
+                            //     .collection('users')
+                            //     .doc(FirebaseAuth.instance.currentUser!.uid)
+                            //     .collection("saved");
+                            // snap.doc()
+
+                            return MainCarCard(
+                              car: car,
+                            );
+                          },
+                          itemCount: filteredCars.length,
+                        )
+                      : Container(
+                          margin: EdgeInsets.all(130),
+                          child: Text(
+                            "No results found",
+                            softWrap: true,
+                            overflow: TextOverflow.fade,
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 159, 11, 11),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ))
+            ],
+          ),
         );
       },
     );
