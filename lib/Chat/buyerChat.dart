@@ -31,6 +31,7 @@ class _BuyerChatState extends State<BuyerChat> {
       stream = FirebaseFirestore.instance
           .collection("chats")
           .where("buyerID", isEqualTo: user!.uid)
+          // .orderBy("lastMessageDate")
           .snapshots();
     }
     super.initState();
@@ -93,6 +94,14 @@ class _BuyerChatState extends State<BuyerChat> {
                     QuerySnapshot chatsSnapshot =
                         snapshot.data as QuerySnapshot;
                     var chatList = snapshot.data!.docs;
+                    chatList.sort((a, b) {
+                      Chat chatA = Chat.constructFromFirebase(
+                          a.data() as Map, a.reference.id);
+                      Chat chatB = Chat.constructFromFirebase(
+                          b.data() as Map, b.reference.id);
+                      return chatB.lastMessageDate
+                          .compareTo(chatA.lastMessageDate);
+                    });
                     print(chatList);
                     return ListView.builder(
                       padding: EdgeInsets.all(10.0),
