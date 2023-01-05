@@ -209,55 +209,56 @@ class _AddCarDetailsState extends State<AddCarDetails> {
             IconButton(
                 onPressed: () {
                   if (FirebaseAuth.instance.currentUser != null) {
-                    List<String> imagesNames = [];
-                    uploadFiles(widget.images).then((value) {
-                      if (widget.extractedCar != null) {
-                        if (value != null) {
-                          List<String> oldURL = [];
+                    if (modelValue.text == "" ||
+                        makeValue.text == "" ||
+                        yearValue.text == "" ||
+                        colorValue.text == "" ||
+                        mileageValue.text == "" ||
+                        startPriceValue.text == "") {
+                      showDialog(
+                          context: context,
+                          builder: ((ctx) {
+                            return AlertDialog(
+                              title: Text("Please fill all the fields"),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(ctx).pop();
+                                    },
+                                    child: Text("Okay"))
+                              ],
+                            );
+                          }));
+                    } else {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      List<String> imagesNames = [];
+                      uploadFiles(widget.images).then((value) {
+                        if (widget.extractedCar != null) {
+                          if (value != null) {
+                            List<String> oldURL = [];
 
-                          List<dynamic> images =
-                              jsonDecode(widget.extractedCar!.imageURL);
+                            List<dynamic> images =
+                                jsonDecode(widget.extractedCar!.imageURL);
 
-                          print(widget.toBeDeleted);
+                            print(widget.toBeDeleted);
 
-                          for (String x in images) {
-                            if (widget.toBeDeleted != null) {
-                              if (!widget.toBeDeleted!.contains(x)) {
+                            for (String x in images) {
+                              if (widget.toBeDeleted != null) {
+                                if (!widget.toBeDeleted!.contains(x)) {
+                                  value.add(x);
+                                }
+                              } else {
                                 value.add(x);
                               }
-                            } else {
-                              value.add(x);
                             }
                           }
                         }
-                      }
 
-                      if (modelValue.text == "" ||
-                          makeValue.text == "" ||
-                          yearValue.text == "" ||
-                          colorValue.text == "" ||
-                          mileageValue.text == "" ||
-                          startPriceValue.text == "") {
-                        return showDialog(
-                            context: context,
-                            builder: ((ctx) {
-                              return AlertDialog(
-                                title: Text("Please fill all the fields"),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.of(ctx).pop();
-                                      },
-                                      child: Text("Okay"))
-                                ],
-                              );
-                            }));
-                      } else {
                         if (widget.extractedCar != null) {
                           print("updated");
-                          setState(() {
-                            isLoading = true;
-                          });
+
                           deleteImageFromFirebase().then((x) {
                             FirebaseFirestore.instance
                                 .collection("cars")
@@ -369,8 +370,8 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                                 }));
                           });
                         }
-                      }
-                    });
+                      });
+                    }
                   } else {
                     showDialog(
                         context: context,
