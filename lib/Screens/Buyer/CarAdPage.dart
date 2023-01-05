@@ -20,6 +20,8 @@ class _CarAdPageState extends State<CarAdPage> {
   var errorText;
   Color errorColor = Colors.red;
 
+  var placedBid = false;
+
   void showToast() {
     setState(() {
       _makeBid = !_makeBid;
@@ -443,9 +445,10 @@ class _CarAdPageState extends State<CarAdPage> {
                       .toUpperCase()),
                   getDetailsRow("Highest Bid", car.getHighestBid().toString()),
                   getDetailsRow("Bid End", car.getCountDown().toString()),
-                  ...car.bids.entries.map((e) =>
-                      getDetailsRow('Bid Id: ${e.key}', e.value.toString())),
-
+                  car.bids.containsKey(currentUserId)
+                      ? getDetailsRow('Your Current Bid:',
+                          car.bids[currentUserId].toString())
+                      : Container(),
                   /////////////////////////show when press button////////////////////////
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -563,15 +566,6 @@ class _CarAdPageState extends State<CarAdPage> {
                   ),
                   const Divider(
                     color: Colors.black,
-                    height: 3,
-                    thickness: 0.8,
-                  ),
-                  getSectionName("Description"),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  const Divider(
-                    color: Color(0xFF006E7F),
                     height: 3,
                     thickness: 0.8,
                   ),
