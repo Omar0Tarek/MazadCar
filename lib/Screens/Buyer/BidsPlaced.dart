@@ -43,7 +43,7 @@ class _BidsPlacedState extends State<BidsPlaced> {
               return ListView.builder(
                 itemBuilder: (itemCtx, index) {
                   Car car = filteredCars.elementAt(index);
-                  return MainCarCard(car: car, saved: false);
+                  return MainCarCard(car: car);
                 },
                 itemCount: filteredCars.length,
               );
