@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,8 +20,12 @@ class _CarAdPageState extends State<CarAdPage> {
   bool _makeBid = false;
   var errorText;
   Color errorColor = Colors.red;
-
   var placedBid = false;
+
+  Timer? timer;
+  String deadline = "";
+
+  bool loaded = false;
 
   void showToast() {
     setState(() {
@@ -51,6 +56,16 @@ class _CarAdPageState extends State<CarAdPage> {
     final routeArgs =
         ModalRoute.of(context)!.settings.arguments as Map<String, Car>;
     Car car = routeArgs['car']!;
+
+    void initTimer() {
+      if (timer != null && timer!.isActive) return;
+
+      timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          deadline = car.getCountDown().toString();
+        });
+      });
+    }
 
     addBid() {
       if (bidValue.text.isEmpty) {
@@ -179,6 +194,7 @@ class _CarAdPageState extends State<CarAdPage> {
 
     // TO DO: Show Icons
     Widget getDetailsRow(String rowName, String rowValue) {
+      initTimer();
       return Column(
         children: [
           const SizedBox(
@@ -386,11 +402,13 @@ class _CarAdPageState extends State<CarAdPage> {
     return FutureBuilder(
       future: getUserModelbyId(currentUserId),
       builder: (context, userdata) {
-        if (userdata.connectionState == ConnectionState.waiting) {
+        if (userdata.connectionState == ConnectionState.waiting && !loaded) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
+
+        loaded = true;
 
         var currentUser = userdata.data as UserModel;
 
@@ -445,11 +463,12 @@ class _CarAdPageState extends State<CarAdPage> {
                       .toUpperCase()),
                   getSectionName("Bidding"),
                   getDetailsRow("Highest Bid", car.getHighestBid().toString()),
-                  getDetailsRow("Bid End", car.getCountDown().toString()),
                   car.bids.containsKey(currentUserId)
                       ? getDetailsRow('Your Current Bid:',
                           car.bids[currentUserId].toString())
                       : Container(),
+
+                  getDetailsRow("Bid End", deadline),
                   /////////////////////////show when press button////////////////////////
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
