@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mazadcar/Providers/filter.dart';
-
 import 'package:mazadcar/Screens/Common/carCard.dart';
 import 'package:provider/provider.dart';
-
 import '../../Models/car.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+import '../Auth/Utils.dart';
 
 class AvailableCars extends StatefulWidget {
   const AvailableCars({super.key});
@@ -15,6 +16,20 @@ class AvailableCars extends StatefulWidget {
 }
 
 class _AvailableCarsState extends State<AvailableCars> {
+  @override
+  void initState() {
+    var fbm = FirebaseMessaging.instance;
+    fbm.requestPermission(); // only shows on ios
+    fbm.subscribeToTopic("classChat");
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      Utils.showBlackSnackbar(message.notification?.title ?? "");
+      print(message.data.toString());
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final filterProvider = Provider.of<FilterProvider>(context);

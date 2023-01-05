@@ -12,11 +12,18 @@ import 'package:provider/provider.dart';
 
 import 'Screens/Auth/AuthPage.dart';
 import 'Screens/Auth/ForgotPassword.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(background_notif_handler);
   runApp(const MyApp());
+}
+
+Future<void> background_notif_handler(RemoteMessage message) async {
+//await Firebase.initializeApp();
+  print("Handling a background message: ${message.data}");
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -62,6 +69,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final fbm = FirebaseMessaging.instance;
+    fbm.requestPermission();
+  }
 
   @override
   Widget build(BuildContext context) {
