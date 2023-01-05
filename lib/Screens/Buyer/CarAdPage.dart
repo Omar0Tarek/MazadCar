@@ -470,74 +470,80 @@ class _CarAdPageState extends State<CarAdPage> {
 
                   getDetailsRow("Bid End", deadline),
                   /////////////////////////show when press button////////////////////////
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        textStyle: TextStyle(fontSize: 18),
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(13)),
-                        // minimumSize: Size.fromHeight(50),
-                      ),
-                      onPressed: showToast,
-                      child: Text(
-                        "Make Bid",
-                        style: TextStyle(color: Colors.blue),
-                      )),
+                  currentUserId != car.sellerId
+                      ? ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            textStyle: TextStyle(fontSize: 18),
+                            backgroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(13)),
+                            // minimumSize: Size.fromHeight(50),
+                          ),
+                          onPressed: showToast,
+                          child: Text(
+                            "Make Bid",
+                            style: TextStyle(color: Colors.blue),
+                          ))
+                      : Container(),
 
                   ///
-                  Visibility(
-                    visible: _makeBid,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.all(5),
-                                margin: EdgeInsets.all(5),
-                                child: TextField(
-                                  keyboardType: TextInputType.number,
-                                  decoration:
-                                      InputDecoration(labelText: "Bid Price"),
-                                  controller: bidValue,
-                                ),
+                  currentUserId != car.sellerId
+                      ? Visibility(
+                          visible: _makeBid,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.all(5),
+                                      margin: EdgeInsets.all(5),
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                            labelText: "Bid Price"),
+                                        controller: bidValue,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    style: ButtonStyle(
+                                      foregroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Colors.blue),
+                                    ),
+                                    onPressed: () => addBid(),
+                                    child: Text('Bid'),
+                                  )
+                                ],
                               ),
-                            ),
-                            TextButton(
-                              style: ButtonStyle(
-                                foregroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.blue),
-                              ),
-                              onPressed: () => addBid(),
-                              child: Text('Bid'),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                            ],
+                          ),
+                        )
+                      : Container(),
 ///////////////////////////////////////till here////////////////////////////
-                  TextButton(
-                    style: ElevatedButton.styleFrom(
-                      textStyle: TextStyle(fontSize: 18),
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(13)),
-                      // minimumSize: Size.fromHeight(50),
-                    ),
-                    // style: ButtonStyle(
-                    //   foregroundColor:
-                    //       MaterialStateProperty.all<Color>(Colors.red),
-                    // ),
-                    onPressed: () => cancelBid(),
-                    child: Text(
-                      'Cancel Bid',
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
+                  currentUserId != car.sellerId
+                      ? TextButton(
+                          style: ElevatedButton.styleFrom(
+                            textStyle: TextStyle(fontSize: 18),
+                            backgroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(13)),
+                            // minimumSize: Size.fromHeight(50),
+                          ),
+                          // style: ButtonStyle(
+                          //   foregroundColor:
+                          //       MaterialStateProperty.all<Color>(Colors.red),
+                          // ),
+                          onPressed: () => cancelBid(),
+                          child: Text(
+                            'Cancel Bid',
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                        )
+                      : Container(),
 
                   Text.rich(
                     softWrap: false,
@@ -586,8 +592,12 @@ class _CarAdPageState extends State<CarAdPage> {
                     height: 3,
                     thickness: 0.8,
                   ),
-                  getSectionName("Seller"),
-                  getSellerSection(currentUser),
+                  currentUserId != car.sellerId
+                      ? getSectionName("Seller")
+                      : Container(),
+                  currentUserId != car.sellerId
+                      ? getSellerSection(currentUser)
+                      : Container(),
                 ],
               ),
             ),
