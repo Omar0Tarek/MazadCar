@@ -69,6 +69,9 @@ class _AvailableCarsState extends State<AvailableCars> {
         } else {
           filteredCars = carList;
         }
+        filteredCars = filteredCars.where((car) {
+          return !car.getCountDown().contains('0 H: 0 M: 0 S');
+        });
         return Column(
           children: [
             filterProvider.filter.isNotEmpty
