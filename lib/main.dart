@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
         else if (snapshot.hasData) {
           return TabControllerScreen();
         } else
-          return AuthPage();
+          return TabControllerScreen();
       },
     ));
   }
