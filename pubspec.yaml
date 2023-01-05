@@ -53,7 +53,6 @@ dependencies:
   intl: ^0.18.0
   image_cropper: ^3.0.1
   emoji_picker_flutter: ^1.5.1
-  camera: ^0.10.1
   flutter_datetime_picker: ^1.5.1
   string_validator: ^0.3.0
 

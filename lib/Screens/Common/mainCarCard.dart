@@ -21,6 +21,8 @@ class _MainCarCardState extends State<MainCarCard> {
   Timer? timer;
   String deadline = "";
 
+  late var timer2;
+
   void initTimer() {
     if (timer != null && timer!.isActive) return;
 
@@ -42,6 +44,12 @@ class _MainCarCardState extends State<MainCarCard> {
     setState(() {
       isSaved = ds.exists;
     });
+
+    // timer2 = Timer.periodic(const Duration(seconds: 30), (timer2) {
+    //   setState(() {
+    //     isSaved = ds.exists;
+    //   });
+    // });
   }
 
   @override
@@ -53,6 +61,15 @@ class _MainCarCardState extends State<MainCarCard> {
     }
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // if (FirebaseAuth.instance.currentUser != null) {
+    //   timer2.cancel();
+    // }
+
+    super.dispose();
   }
 
   void goToCarAdPage(BuildContext myContext) {

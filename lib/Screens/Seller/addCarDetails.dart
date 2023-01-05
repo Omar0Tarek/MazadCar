@@ -180,6 +180,12 @@ class _AddCarDetailsState extends State<AddCarDetails> {
     return super.initState();
   }
 
+  static validate(String? txt) {
+    if (txt == null || txt.isEmpty) {
+      return "Fill please";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print(widget.toBeDeleted);
@@ -387,13 +393,10 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
                           child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please fill';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(labelText: "Make"),
+                            decoration: InputDecoration(
+                              labelText: "Make",
+                              errorText: validate(makeValue.text),
+                            ),
                             controller: makeValue,
                           ),
                         ),
@@ -403,13 +406,10 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
                           child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please fill';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(labelText: "Model"),
+                            decoration: InputDecoration(
+                              labelText: "Model",
+                              errorText: validate(makeValue.text),
+                            ),
                             controller: modelValue,
                           ),
                         ),
@@ -419,13 +419,10 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
                           child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please fill';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(labelText: "Year"),
+                            decoration: InputDecoration(
+                              labelText: "Year",
+                              errorText: validate(makeValue.text),
+                            ),
                             controller: yearValue,
                             keyboardType: TextInputType.number,
                             inputFormatters: <TextInputFormatter>[
@@ -443,13 +440,10 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
                           child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please fill';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(labelText: "Mileage"),
+                            decoration: InputDecoration(
+                              labelText: "Mileage",
+                              errorText: validate(makeValue.text),
+                            ),
                             controller: mileageValue,
                             keyboardType: TextInputType.number,
                             inputFormatters: <TextInputFormatter>[
@@ -463,13 +457,10 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
                           child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please fill';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(labelText: "Color"),
+                            decoration: InputDecoration(
+                              labelText: "Color",
+                              errorText: validate(makeValue.text),
+                            ),
                             controller: colorValue,
                           ),
                         ),
@@ -479,14 +470,10 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
                           child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please fill';
-                              }
-                              return null;
-                            },
-                            decoration:
-                                InputDecoration(labelText: "Start Price"),
+                            decoration: InputDecoration(
+                              labelText: "Start Price",
+                              errorText: validate(makeValue.text),
+                            ),
                             controller: startPriceValue,
                             keyboardType: TextInputType.number,
                             inputFormatters: <TextInputFormatter>[
