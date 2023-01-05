@@ -217,7 +217,7 @@ class _CarAdPageState extends State<CarAdPage> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Image.network(
-                jsonDecode(car.imageURL)[0],
+                currentUser.profilepic,
                 fit: BoxFit.cover,
               ),
             ),
