@@ -17,10 +17,15 @@ class CarAdPage extends StatefulWidget {
 class _CarAdPageState extends State<CarAdPage> {
   final bidValue = TextEditingController();
   bool _makeBid = false;
+  var errorText;
+  Color errorColor = Colors.red;
 
   void showToast() {
     setState(() {
       _makeBid = !_makeBid;
+      setState(() {
+        errorText = "";
+      });
     });
   }
 
@@ -47,11 +52,19 @@ class _CarAdPageState extends State<CarAdPage> {
 
     addBid() {
       if (bidValue.text.isEmpty) {
-        // You must enter a valid bid price
+        setState(() {
+          errorText = "You must enter a valid bid price";
+          errorColor = Colors.red;
+        });
+        return;
       }
       int bidPrice = int.parse(bidValue.text);
       if (bidPrice <= car.getHighestBid()) {
-        // New bid should be higher than the current highest bid
+        setState(() {
+          errorText = "New bid should be higher than the current highest bid";
+          errorColor = Colors.red;
+        });
+        return;
       }
 
       String biddingUserID = FirebaseAuth.instance.currentUser!.uid;
@@ -63,7 +76,14 @@ class _CarAdPageState extends State<CarAdPage> {
             'bids': car.bids,
           })
           .catchError((err) {})
-          .then((_) {});
+          .then((_) {
+            setState(() {
+              _makeBid = !_makeBid;
+              errorText = "New bid placed successfully";
+              bidValue.text = "";
+              errorColor = Colors.green;
+            });
+          });
     }
 
     cancelBid() {
@@ -77,7 +97,17 @@ class _CarAdPageState extends State<CarAdPage> {
               'bids': car.bids,
             })
             .catchError((err) {})
-            .then((_) {});
+            .then((_) {
+              setState(() {
+                errorText = "Bid cancelled successfully";
+                errorColor = Colors.green;
+              });
+            });
+      } else {
+        setState(() {
+          errorText = "You didn't bid on the car previously";
+          errorColor = Colors.red;
+        });
       }
     }
 
@@ -411,7 +441,6 @@ class _CarAdPageState extends State<CarAdPage> {
                   ),
                   getNameRow((car.make + " " + car.model + " " + car.year)
                       .toUpperCase()),
-                  getDetailsRow(car.payment, car.startDate.toString()),
                   getDetailsRow("Highest Bid", car.getHighestBid().toString()),
                   getDetailsRow("Bid End", car.getCountDown().toString()),
                   ...car.bids.entries.map((e) =>
@@ -431,46 +460,71 @@ class _CarAdPageState extends State<CarAdPage> {
 
                   ///
                   Visibility(
-                      visible: _makeBid,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.all(5),
-                                  margin: EdgeInsets.all(5),
-                                  child: TextField(
-                                    keyboardType: TextInputType.number,
-                                    decoration:
-                                        InputDecoration(labelText: "Bid Price"),
-                                    controller: bidValue,
-                                  ),
+                    visible: _makeBid,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                margin: EdgeInsets.all(5),
+                                child: TextField(
+                                  keyboardType: TextInputType.number,
+                                  decoration:
+                                      InputDecoration(labelText: "Bid Price"),
+                                  controller: bidValue,
                                 ),
                               ),
-                              TextButton(
-                                style: ButtonStyle(
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.blue),
-                                ),
-                                onPressed: () => addBid(),
-                                child: Text('Bid'),
-                              )
-                            ],
-                          ),
-                          TextButton(
-                            style: ButtonStyle(
-                              foregroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.blue),
                             ),
-                            onPressed: () => cancelBid(),
-                            child: Text('Cancel Bid'),
-                          ),
-                        ],
-                      )),
-
+                            TextButton(
+                              style: ButtonStyle(
+                                foregroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.blue),
+                              ),
+                              onPressed: () => addBid(),
+                              child: Text('Bid'),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
 ///////////////////////////////////////till here////////////////////////////
+                  TextButton(
+                    style: ElevatedButton.styleFrom(
+                      textStyle: TextStyle(fontSize: 18),
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(13)),
+                      // minimumSize: Size.fromHeight(50),
+                    ),
+                    // style: ButtonStyle(
+                    //   foregroundColor:
+                    //       MaterialStateProperty.all<Color>(Colors.red),
+                    // ),
+                    onPressed: () => cancelBid(),
+                    child: Text(
+                      'Cancel Bid',
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+
+                  Text.rich(
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    TextSpan(
+                      text: errorText,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: errorColor,
+                      ),
+                    ),
+                  ),
 
                   const SizedBox(
                     height: 15,
