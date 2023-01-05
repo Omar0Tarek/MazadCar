@@ -116,13 +116,19 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 child: const Text(
                   'Forgot Password',
+                  style: TextStyle(color: Color.fromARGB(255, 105, 8, 8)),
                 ),
               ),
               Container(
                   height: 50,
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: ElevatedButton(
-                    child: const Text('Login'),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(color: Colors.white),
+                    ),
                     onPressed: () {
                       signIn();
                     },
@@ -134,7 +140,8 @@ class _LoginPageState extends State<LoginPage> {
                   TextButton(
                     child: const Text(
                       'Sign Up',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(
+                          fontSize: 20, color: Color.fromARGB(255, 105, 8, 8)),
                     ),
                     onPressed: () {
                       widget.onClickedSignUp();

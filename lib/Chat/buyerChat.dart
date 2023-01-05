@@ -26,11 +26,13 @@ class _BuyerChatState extends State<BuyerChat> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> stream;
   @override
   void initState() {
-    final user = auth.currentUser;
-    stream = FirebaseFirestore.instance
-        .collection("chats")
-        .where("buyerID", isEqualTo: user!.uid)
-        .snapshots();
+    if (FirebaseAuth.instance.currentUser != null) {
+      final user = auth.currentUser;
+      stream = FirebaseFirestore.instance
+          .collection("chats")
+          .where("buyerID", isEqualTo: user!.uid)
+          .snapshots();
+    }
     super.initState();
   }
 
@@ -75,167 +77,188 @@ class _BuyerChatState extends State<BuyerChat> {
 
   @override
   Widget build(BuildContext context) {
-    final user = auth.currentUser;
-    var chatInstances = FirebaseFirestore.instance.collection("chats");
+    return FirebaseAuth.instance.currentUser != null
+        ? Container(
+            child: StreamBuilder(
+              stream: stream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.active) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                      ),
+                    );
+                  } else {
+                    QuerySnapshot chatsSnapshot =
+                        snapshot.data as QuerySnapshot;
+                    var chatList = snapshot.data!.docs;
+                    print(chatList);
+                    return ListView.builder(
+                      padding: EdgeInsets.all(10.0),
+                      itemBuilder: (context, index) {
+                        var chatsPopulated = Chat.constructFromFirebase(
+                            chatList[index].data() as Map,
+                            chatList[index].reference.id);
+                        print(chatsPopulated);
+                        var receiver = chatsPopulated.sellerID;
+                        return FutureBuilder(
+                            future: getUserModelbyId(receiver,
+                                chatsPopulated.adID, chatsPopulated.buyerID),
+                            builder: (context, userdata) {
+                              if (userdata.connectionState ==
+                                  ConnectionState.done) {
+                                if (userdata.data != null) {
+                                  UserModel targetuser =
+                                      userdata.data[0] as UserModel;
+                                  Car carAD = userdata.data[1] as Car;
+                                  List<dynamic> images =
+                                      jsonDecode(carAD.imageURL);
 
-    return Container(
-      child: StreamBuilder(
-        stream: stream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                ),
-              );
-            } else {
-              QuerySnapshot chatsSnapshot = snapshot.data as QuerySnapshot;
-              var chatList = snapshot.data!.docs;
-              print(chatList);
-              return ListView.builder(
-                padding: EdgeInsets.all(10.0),
-                itemBuilder: (context, index) {
-                  var chatsPopulated = Chat.constructFromFirebase(
-                      chatList[index].data() as Map,
-                      chatList[index].reference.id);
-                  print(chatsPopulated);
-                  var receiver = chatsPopulated.sellerID;
-                  return FutureBuilder(
-                      future: getUserModelbyId(receiver, chatsPopulated.adID,
-                          chatsPopulated.buyerID),
-                      builder: (context, userdata) {
-                        if (userdata.connectionState == ConnectionState.done) {
-                          if (userdata.data != null) {
-                            UserModel targetuser =
-                                userdata.data[0] as UserModel;
-                            Car carAD = userdata.data[1] as Car;
-                            List<dynamic> images = jsonDecode(carAD.imageURL);
-
-                            return Container(
-                              margin: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.grey, //New
-                                        blurRadius: 5.0,
-                                        offset: Offset(0, 10))
-                                  ],
-                                  border: Border.all(
-                                    color: Colors.black,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
-                                  ),
-                                  color: Colors.white),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 5,
-                                  left: 10,
-                                  bottom: 5,
-                                ),
-                                child: ListTile(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: ((context) {
-                                          return ChatPage(
-                                            targetuser: targetuser,
-                                            chat: chatsPopulated,
-                                            currentUser: userdata.data[2],
-                                            ad: userdata.data[1],
-                                            // currentUser: userdata.data[2],
+                                  return Container(
+                                    margin: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.grey, //New
+                                              blurRadius: 5.0,
+                                              offset: Offset(0, 10))
+                                        ],
+                                        border: Border.all(
+                                          color: Colors.black,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(15),
+                                        ),
+                                        color: Colors.white),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 5,
+                                        left: 10,
+                                        bottom: 5,
+                                      ),
+                                      child: ListTile(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: ((context) {
+                                                return ChatPage(
+                                                  targetuser: targetuser,
+                                                  chat: chatsPopulated,
+                                                  currentUser: userdata.data[2],
+                                                  ad: userdata.data[1],
+                                                  // currentUser: userdata.data[2],
+                                                );
+                                              }),
+                                            ),
                                           );
-                                        }),
-                                      ),
-                                    );
-                                  },
-                                  leading: CircleAvatar(
-                                    radius: 35,
-                                    backgroundImage: NetworkImage(
-                                      images[0].toString(),
-                                    ),
-                                  ),
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        carAD.make +
-                                            " " +
-                                            carAD.model +
-                                            " " +
-                                            carAD.year,
-                                      ),
-                                    ],
-                                  ),
-                                  subtitle: (chatsPopulated.lastMessage == null)
-                                      ? Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 5,
+                                        },
+                                        leading: CircleAvatar(
+                                          radius: 35,
+                                          backgroundImage: NetworkImage(
+                                            images[0].toString(),
                                           ),
-                                          child: Row(
-                                            children: const [
-                                              Icon(
-                                                Icons.image,
-                                                size: 20,
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text(
-                                                "Image",
-                                              ),
-                                              SizedBox(
-                                                width: 40,
-                                              ),
-                                              Text(""),
-                                            ],
-                                          ))
-                                      : Row(
+                                        ),
+                                        title: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              chatsPopulated.lastMessage
-                                                  .toString(),
-                                            ),
-                                            Text(
-                                              (chatsPopulated.lastMessageDate ==
-                                                      null)
-                                                  ? "lopp"
-                                                  : DateFormat.jm().format(
-                                                      chatsPopulated
-                                                          .lastMessageDate),
+                                              carAD.make +
+                                                  " " +
+                                                  carAD.model +
+                                                  " " +
+                                                  carAD.year,
                                             ),
                                           ],
                                         ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return Text("User data is null");
-                          }
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      });
-                },
-                itemCount: chatsSnapshot.docs.length,
-              );
-            }
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return Center(child: Text("Error: Check Internet Connection"));
-          }
-        },
-      ),
-    );
+                                        subtitle: (chatsPopulated.lastMessage ==
+                                                null)
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 5,
+                                                ),
+                                                child: Row(
+                                                  children: const [
+                                                    Icon(
+                                                      Icons.image,
+                                                      size: 20,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      "Image",
+                                                    ),
+                                                    SizedBox(
+                                                      width: 40,
+                                                    ),
+                                                    Text(""),
+                                                  ],
+                                                ))
+                                            : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    chatsPopulated.lastMessage
+                                                        .toString(),
+                                                  ),
+                                                  Text(
+                                                    (chatsPopulated
+                                                                .lastMessageDate ==
+                                                            null)
+                                                        ? "lopp"
+                                                        : DateFormat.jm().format(
+                                                            chatsPopulated
+                                                                .lastMessageDate),
+                                                  ),
+                                                ],
+                                              ),
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return Text("User data is null");
+                                }
+                              } else {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            });
+                      },
+                      itemCount: chatsSnapshot.docs.length,
+                    );
+                  }
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return Center(
+                      child: Text("Error: Check Internet Connection"));
+                }
+              },
+            ),
+          )
+        : SizedBox(
+            height: 200,
+            child: Container(
+              margin: EdgeInsets.all(20),
+              padding: EdgeInsets.all(20),
+              child: Center(
+                  child: Text(
+                "Sign in to Start",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 30),
+              )),
+            ),
+          );
   }
 }

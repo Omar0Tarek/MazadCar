@@ -51,7 +51,7 @@ class Chat {
       adID: data['adID'] ?? "",
       adName: data['adName'] ?? "",
       lastMessage: data['lastMessage'] ?? "",
-      lastMessageDate: data['lastMessageDate'].toDate() ?? "",
+      lastMessageDate: data['lastMessageDate']?.toDate() ?? DateTime.now(),
     );
   }
 

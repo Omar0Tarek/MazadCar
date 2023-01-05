@@ -81,6 +81,36 @@ class _CarAdPageState extends State<CarAdPage> {
       }
     }
 
+    void chatWithSeller() {
+      String biddingUserID = FirebaseAuth.instance.currentUser!.uid;
+      FirebaseFirestore.instance.collection("chats").add({
+        'sellerID': car.sellerId,
+        'buyerID': biddingUserID,
+        'adID': car.id,
+        'adName': car.name,
+      }).then((documentSnapshot) {
+        Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+      }).catchError((err) {
+        return showDialog(
+            context: context,
+            builder: ((ctx) {
+              return AlertDialog(
+                title: Text("An error occurred"),
+                content: Text(
+                  err.toString(),
+                ),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                      child: Text("Okay"))
+                ],
+              );
+            }));
+      });
+    }
+
     getSectionName(String sectionName) {
       return Container(
         margin: const EdgeInsets.all(8),
@@ -182,8 +212,8 @@ class _CarAdPageState extends State<CarAdPage> {
             width: 10,
           ),
           Container(
-            height: 75,
-            width: 75,
+            height: 120,
+            width: 90,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Image.network(
@@ -225,7 +255,7 @@ class _CarAdPageState extends State<CarAdPage> {
                         softWrap: false,
                         overflow: TextOverflow.fade,
                         TextSpan(
-                          text: currentUser.name,
+                          text: 'Phone: ${currentUser.phone}',
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -238,6 +268,47 @@ class _CarAdPageState extends State<CarAdPage> {
                 SizedBox(
                   height: 5,
                 ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: Text.rich(
+                        softWrap: false,
+                        overflow: TextOverflow.fade,
+                        TextSpan(
+                          text: 'Email: ${currentUser.email}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          textStyle: TextStyle(fontSize: 16),
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          minimumSize: Size.fromHeight(30),
+                        ),
+                        onPressed: chatWithSeller,
+                        child: Text("Chat"),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  ],
+                )
               ],
             ),
           )

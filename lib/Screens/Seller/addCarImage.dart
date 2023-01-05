@@ -53,16 +53,26 @@ class _addCarImagesState extends State<addCarImages> {
     if (toBeDeleted.isNotEmpty) {
       if (toBeDeleted.contains(imageFileUrl)) {
         toBeDeleted.remove(imageFileUrl);
+      } else {
+        toBeDeleted.add(imageFileUrl);
       }
     } else {
       if (ModalRoute.of(context)!.settings.arguments != null) {
         // savedImages = jsonDecode(extractedCar!.imageURL);
         // savedImages.remove(imageFileUrl);
         // extractedCar!.imageURL = jsonEncode(savedImages);
-
         toBeDeleted.add(imageFileUrl);
         print(toBeDeleted);
       }
+    }
+  }
+
+  bool checkImages() {
+    var images = savedImages.where((element) => !toBeDeleted.contains(element));
+    if (images.isEmpty) {
+      return false;
+    } else {
+      return true;
     }
   }
 
@@ -152,7 +162,7 @@ class _addCarImagesState extends State<addCarImages> {
         ),
         floatingActionButton: FloatingActionButton(
             backgroundColor: imageFileList!.isEmpty
-                ? savedImages.isEmpty
+                ? !checkImages()
                     ? Colors.grey
                     : Colors.black
                 : Colors.black,
@@ -193,117 +203,160 @@ class _addCarImagesState extends State<addCarImages> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: GridView.builder(
-                      itemCount: imageFileList!.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4),
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: ((ctx) {
-                                  return AlertDialog(
-                                    title: Text("Delete Image"),
-                                    content: Text(
-                                        "Do you want to delete this image ?"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              imageFileList?.removeAt(index);
-                                            });
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text("Delete"))
-                                    ],
-                                  );
-                                }));
-                          },
-                          child: Image.file(
-                            File(imageFileList![index].path),
-                            fit: BoxFit.cover,
-                          ),
-                        );
-                      }),
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(15),
+                      ),
+                      border: Border.all(),
+                    ),
+                    child: GridView.builder(
+                        itemCount: imageFileList!.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4),
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: ((ctx) {
+                                    return AlertDialog(
+                                      title: Text("Delete Image"),
+                                      content: Text(
+                                          "Do you want to delete this image ?"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                imageFileList?.removeAt(index);
+                                              });
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("Delete"))
+                                      ],
+                                    );
+                                  }));
+                            },
+                            child: Image.file(
+                              File(imageFileList![index].path),
+                              fit: BoxFit.cover,
+                            ),
+                          );
+                        }),
+                  ),
                 ),
               ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GridView.builder(
-                      itemCount: savedImages.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4),
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: ((ctx) {
-                                  return AlertDialog(
-                                    title: toBeDeleted.isNotEmpty &&
-                                            toBeDeleted
-                                                .contains(savedImages[index])
-                                        ? Text("Undo Image Deletion")
-                                        : Text("Delete Image"),
-                                    content: toBeDeleted.isNotEmpty &&
-                                            toBeDeleted
-                                                .contains(savedImages[index])
-                                        ? Text(
-                                            "Do you want to undo this image deletion?")
-                                        : Text(
-                                            "Do you want to delete this image ?"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              deleteImageFromFirebase(
-                                                  savedImages[index]);
-                                            });
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: toBeDeleted.isNotEmpty &&
-                                                  toBeDeleted.contains(
-                                                      savedImages[index])
-                                              ? Text("Undo")
-                                              : Text("Delete"))
-                                    ],
-                                  );
-                                }));
-                          },
-                          child: toBeDeleted.contains(savedImages[index])
-                              ? Stack(children: [
-                                  ClipRRect(
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(15),
-                                          topRight: Radius.circular(15)),
-                                      child: Image.network(savedImages[index],
-                                          fit: BoxFit.cover)),
-                                  Positioned.fill(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(15),
-                                          topRight: Radius.circular(15)),
-                                      child: Container(
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.close_sharp,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    bottom: 0,
-                                  )
-                                ])
-                              : Image.network(
-                                  savedImages[index],
-                                ),
-                        );
-                      }),
-                ),
-              ),
+                  child: savedImages.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                              border: Border.all(),
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              child: GridView.builder(
+                                  itemCount: savedImages.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 4),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: ((ctx) {
+                                              return AlertDialog(
+                                                title: toBeDeleted.isNotEmpty &&
+                                                        toBeDeleted.contains(
+                                                            savedImages[index])
+                                                    ? Text(
+                                                        "Undo Image Deletion")
+                                                    : Text("Delete Image"),
+                                                content: toBeDeleted
+                                                            .isNotEmpty &&
+                                                        toBeDeleted.contains(
+                                                            savedImages[index])
+                                                    ? Text(
+                                                        "Do you want to undo this image deletion?")
+                                                    : Text(
+                                                        "Do you want to delete this image ?"),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          deleteImageFromFirebase(
+                                                              savedImages[
+                                                                  index]);
+                                                        });
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: toBeDeleted
+                                                                  .isNotEmpty &&
+                                                              toBeDeleted.contains(
+                                                                  savedImages[
+                                                                      index])
+                                                          ? Text("Undo")
+                                                          : Text("Delete"))
+                                                ],
+                                              );
+                                            }));
+                                      },
+                                      child: toBeDeleted
+                                              .contains(savedImages[index])
+                                          ? Stack(children: [
+                                              ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  15),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  15)),
+                                                  child: Image.network(
+                                                      savedImages[index],
+                                                      fit: BoxFit.cover)),
+                                              Positioned.fill(
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  15),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  15)),
+                                                  child: Container(
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.close_sharp,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                bottom: 0,
+                                              )
+                                            ])
+                                          : Image.network(
+                                              savedImages[index],
+                                            ),
+                                    );
+                                  }),
+                            ),
+                          ),
+                        )
+                      : Text("")),
             ],
           ),
         ));

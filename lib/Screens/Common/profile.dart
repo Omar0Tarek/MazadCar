@@ -36,13 +36,15 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
-    getUser();
+    if (FirebaseAuth.instance.currentUser != null) {
+      getUser();
+    }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("check here " + FirebaseAuth.instance.currentUser!.uid);
     // print("hi " + FirebaseFirestore.instance.collection("users").doc().toString());
 
     return Scaffold(
@@ -73,22 +75,22 @@ class _ProfileState extends State<Profile> {
                           body: AuthPage(),
                           appBar: AppBar(
                             iconTheme: IconThemeData(color: Colors.black),
-                            backgroundColor: Colors.black,
-                            title: Container(
-                              margin: EdgeInsets.all(15),
-                              padding: EdgeInsets.only(
-                                  left: 55, bottom: 20, top: 10),
-                              child: Image.asset(
-                                'assets/images/logo.png',
-                              ),
-                            ),
+                            backgroundColor: Colors.white,
+                            // title: Container(
+                            //   margin: EdgeInsets.all(15),
+                            //   padding: EdgeInsets.only(
+                            //       left: 20, bottom: 20, top: 10),
+                            //   child: Image.asset(
+                            //     'assets/images/logo.png',
+                            //   ),
+                            // ),
                           ),
                         );
                       }));
                     }),
                     child: Text(
                       'Login',
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.white),
                     ),
                   )
           ],
@@ -97,7 +99,21 @@ class _ProfileState extends State<Profile> {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         body: FirebaseAuth.instance.currentUser == null
-            ? Text("Sign in")
+            ? SizedBox(
+                height: 200,
+                child: Container(
+                  margin: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20),
+                  child: Center(
+                      child: Text(
+                    "Sign in ",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 30),
+                  )),
+                ),
+              )
             : user == null
                 ? Center(
                     child: CircularProgressIndicator(
@@ -113,18 +129,7 @@ class _ProfileState extends State<Profile> {
                       SizedBox(
                         height: 10,
                       ),
-                      // const Center(
-                      //     child: Padding(
-                      //         padding: EdgeInsets.only(bottom: 20),
-                      //         child: Text(
-                      //           'User Profile',
-                      //           style: TextStyle(
-                      //             fontSize: 30,
-                      //             fontWeight: FontWeight.w700,
-                      //             color: Colors.black,
-                      //           ),
-                      //         ))),
-                      /////profile pic//////////////////////////////////////////////////////////////////
+
                       InkWell(
                         onTap: () {
                           navigateSecondPage(EditImagePage(

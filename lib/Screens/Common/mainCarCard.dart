@@ -23,6 +23,7 @@ class _MainCarCardState extends State<MainCarCard> {
         .collection("saved")
         .doc(widget.car.id)
         .get();
+    if (!mounted) return;
     setState(() {
       isSaved = ds.exists;
     });
@@ -30,7 +31,12 @@ class _MainCarCardState extends State<MainCarCard> {
 
   @override
   void initState() {
-    checkIfSavedOrNot();
+    if (FirebaseAuth.instance.currentUser != null) {
+      checkIfSavedOrNot();
+    } else {
+      isSaved = false;
+    }
+
     super.initState();
   }
 
