@@ -358,7 +358,8 @@ class _CarAdPageState extends State<CarAdPage> {
                         enlargeFactor: 0.3,
                         scrollDirection: Axis.horizontal,
                       ),
-                      items: [1, 2, 3, 4, 5].map((i) {
+                      items:
+                          List<String>.from(jsonDecode(car.imageURL)).map((i) {
                         return Builder(
                           builder: (BuildContext context) {
                             return Container(
@@ -366,7 +367,7 @@ class _CarAdPageState extends State<CarAdPage> {
                               // margin: EdgeInsets.symmetric(horizontal: 5.0),
                               decoration: BoxDecoration(color: Colors.amber),
                               child: Image.network(
-                                jsonDecode(car.imageURL)[0],
+                                i,
                                 fit: BoxFit.cover,
                               ),
                             );
