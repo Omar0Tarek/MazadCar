@@ -114,8 +114,8 @@ class _MainCarCardState extends State<MainCarCard> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        height: 160,
-                        width: 130,
+                        height: 140,
+                        width: 120,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
                           child: Image.network(
