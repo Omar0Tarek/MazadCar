@@ -443,6 +443,7 @@ class _CarAdPageState extends State<CarAdPage> {
                   ),
                   getNameRow((car.make + " " + car.model + " " + car.year)
                       .toUpperCase()),
+                  getSectionName("Bidding"),
                   getDetailsRow("Highest Bid", car.getHighestBid().toString()),
                   getDetailsRow("Bid End", car.getCountDown().toString()),
                   car.bids.containsKey(currentUserId)
@@ -459,7 +460,10 @@ class _CarAdPageState extends State<CarAdPage> {
                         // minimumSize: Size.fromHeight(50),
                       ),
                       onPressed: showToast,
-                      child: Text("Make Bid")),
+                      child: Text(
+                        "Make Bid",
+                        style: TextStyle(color: Colors.blue),
+                      )),
 
                   ///
                   Visibility(
@@ -538,11 +542,6 @@ class _CarAdPageState extends State<CarAdPage> {
                     thickness: 0.8,
                   ),
                   getSectionName("Details"),
-                  const Divider(
-                    color: Colors.black,
-                    height: 3,
-                    thickness: 0.8,
-                  ),
                   getDetailsRow("Make", car.make),
                   getDetailsRowDivider(),
                   getDetailsRow("Model", car.model),
@@ -560,7 +559,6 @@ class _CarAdPageState extends State<CarAdPage> {
                   getDetailsRow("Payment Option", car.payment),
                   getDetailsRowDivider(),
                   getDetailsRow("Condition", car.condition),
-                  getDetailsRowDivider(),
                   const SizedBox(
                     height: 15,
                   ),
