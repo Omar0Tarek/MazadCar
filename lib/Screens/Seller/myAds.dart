@@ -85,21 +85,16 @@ class _MyAdsState extends State<MyAds> {
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.all(10),
-                            child: Text(
-                              "Old ADs",
-                              overflow: TextOverflow.fade,
-                              softWrap: true,
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 159, 11, 11),
-                                fontSize: 27,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: Text(
+                          "Old ADs:",
+                          overflow: TextOverflow.fade,
+                          softWrap: true,
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 159, 11, 11),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ],
                       ),
@@ -325,8 +320,42 @@ class _MyAdsState extends State<MyAds> {
                                     )
                                   ],
                                 ),
-                              );
-                            },
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(15),
+                                ),
+                                border: Border.all(),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.grey, //New
+                                      blurRadius: 5.0,
+                                      offset: Offset(0, 10))
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: Text(
+                          "On Going Ads:",
+                          softWrap: true,
+                          overflow: TextOverflow.fade,
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 159, 11, 11),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                   ),
                 ],

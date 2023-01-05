@@ -20,6 +20,7 @@ class _FilterScreenState extends State<FilterScreen> {
   var appliedMake;
   var appliedTransmission;
   var appliedMileage;
+  var appliedPrice;
   var appliedLocation;
   var map;
   Set<String> make = {};
@@ -34,6 +35,7 @@ class _FilterScreenState extends State<FilterScreen> {
   @override
   Widget build(BuildContext context) {
     var mileageController = TextEditingController();
+    var priceController = TextEditingController();
 
     final filterProvider = Provider.of<FilterProvider>(context);
     var carInstances = FirebaseFirestore.instance.collection("cars");
@@ -56,6 +58,12 @@ class _FilterScreenState extends State<FilterScreen> {
       appliedMileage = filter['maxMileage'].toString();
       appliedFilter['maxMileage'] = filter['maxMileage'];
       mileageController.text = appliedMileage;
+      //mileageController.value = appliedMileage;
+    }
+    if (filter['maxPrice'] != null) {
+      appliedPrice = filter['maxPrice'].toString();
+      appliedFilter['maxPrice'] = filter['maxPrice'];
+      priceController.text = appliedPrice;
       //mileageController.value = appliedMileage;
     }
     return StreamBuilder<QuerySnapshot>(
@@ -105,7 +113,8 @@ class _FilterScreenState extends State<FilterScreen> {
                     boxShadow: null,
                   ),
                   padding: const EdgeInsets.all(20),
-                  child: Column(
+                  child: Expanded(
+                      child: Column(
                     children: [
                       Divider(
                         color: Colors.black,
@@ -278,7 +287,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        'Transmission:',
+                                        'Engine:',
                                         overflow: TextOverflow.fade,
                                         style: const TextStyle(
                                           fontSize: 20,
@@ -302,7 +311,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                         underline: Container(
                                           color: Colors.white,
                                         ),
-                                        hint: Text('Choose the transmission'),
+                                        hint: Text('Choose the engine type'),
                                         items: [
                                           DropdownMenuItem<String>(
                                             value: 'Manual',
@@ -356,7 +365,7 @@ class _FilterScreenState extends State<FilterScreen> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        'Location:',
+                                        'Price:',
                                         overflow: TextOverflow.fade,
                                         style: const TextStyle(
                                           fontSize: 20,
@@ -372,44 +381,49 @@ class _FilterScreenState extends State<FilterScreen> {
                                 Row(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
+                                    Column(
+                                      children: [],
+                                    ),
                                     SizedBox(
                                       width: 5,
                                     ),
                                     Expanded(
-                                      child: DropdownButton(
-                                        underline: Container(
-                                          color: Colors.white,
-                                        ),
-                                        hint: Text('Choose the location'),
-                                        items: location
-                                            .map<DropdownMenuItem<String>>(
-                                                (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                        onChanged: ((value) => setState(() {
-                                              appliedLocation = value;
-                                              appliedFilter['location'] = value;
-                                            })),
-                                        value: appliedLocation,
-                                      ),
-                                    ),
+                                        child: TextFormField(
+                                      onChanged: (value) => {
+                                        if (value.isNotEmpty)
+                                          {
+                                            appliedFilter['maxPrice'] =
+                                                int.parse(value)
+                                          }
+                                        else
+                                          appliedFilter['maxPrice'] = null
+                                      },
+                                      controller: priceController,
+                                      cursorColor: Colors.black,
+                                      //controller: emailController,
+                                      decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          //labelText: 'Maximum Mileage',
+                                          hintText: 'Maximum Price'),
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: <TextInputFormatter>[
+                                        FilteringTextInputFormatter.digitsOnly
+                                      ], // Only numbers can be entered
+                                    )),
                                   ],
-                                ),
-                                Divider(
-                                  color: Colors.black,
-                                  height: 5,
-                                  thickness: 1,
                                 ),
                               ],
                             ),
                           )
                         ],
                       ),
+                      Divider(
+                        color: Colors.black,
+                        height: 5,
+                        thickness: 1,
+                      ),
                     ],
-                  ),
+                  )),
                 )));
       },
     );

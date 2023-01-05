@@ -83,47 +83,24 @@ class _SavedState extends State<Saved> {
                                 if (userdata.data != null) {
                                   Car carAD = userdata.data as Car;
 
-                                  return MainCarCard(
-                                    car: carAD,
-                                    saved: true,
-                                  );
-                                } else {
-                                  return Text("User data is null");
-                                }
-                              } else {
-                                return Text("");
-                              }
-                            });
-                      },
-                      itemCount: savedSnapshot.docs.length,
-                    );
-                  }
-                } else if (snapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.black,
-                    ),
-                  );
-                } else {
-                  return Center(
-                      child: Text("Error: Check Internet Connection"));
-                }
-              },
-            )
-          : SizedBox(
-              height: 200,
-              child: Container(
-                margin: EdgeInsets.all(20),
-                padding: EdgeInsets.all(20),
-                child: Center(
-                    child: Text(
-                  "Sign in to Start",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 30),
-                )),
+                            return MainCarCard(
+                              car: carAD,
+                            );
+                          } else {
+                            return Text("User data is null");
+                          }
+                        } else {
+                          return Text("");
+                        }
+                      });
+                },
+                itemCount: savedSnapshot.docs.length,
+              );
+            }
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Colors.black,
               ),
             ),
     );
