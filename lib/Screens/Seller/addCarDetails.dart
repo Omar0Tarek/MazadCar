@@ -184,6 +184,8 @@ class _AddCarDetailsState extends State<AddCarDetails> {
     if (txt == null || txt.isEmpty) {
       return "Fill please";
     }
+
+    return;
   }
 
   @override
@@ -207,10 +209,6 @@ class _AddCarDetailsState extends State<AddCarDetails> {
             IconButton(
                 onPressed: () {
                   if (FirebaseAuth.instance.currentUser != null) {
-                    setState(() {
-                      isLoading = true;
-                    });
-
                     List<String> imagesNames = [];
                     uploadFiles(widget.images).then((value) {
                       if (widget.extractedCar != null) {
@@ -234,14 +232,93 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         }
                       }
 
-                      if (widget.extractedCar != null) {
-                        print("updated");
-
-                        deleteImageFromFirebase().then((x) {
-                          FirebaseFirestore.instance
-                              .collection("cars")
-                              .doc(widget.extractedCar!.id)
-                              .update({
+                      if (modelValue.text == "" ||
+                          makeValue.text == "" ||
+                          yearValue.text == "" ||
+                          colorValue.text == "" ||
+                          mileageValue.text == "" ||
+                          startPriceValue.text == "") {
+                        return showDialog(
+                            context: context,
+                            builder: ((ctx) {
+                              return AlertDialog(
+                                title: Text("Please fill all the fields"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(ctx).pop();
+                                      },
+                                      child: Text("Okay"))
+                                ],
+                              );
+                            }));
+                      } else {
+                        if (widget.extractedCar != null) {
+                          print("updated");
+                          setState(() {
+                            isLoading = true;
+                          });
+                          deleteImageFromFirebase().then((x) {
+                            FirebaseFirestore.instance
+                                .collection("cars")
+                                .doc(widget.extractedCar!.id)
+                                .update({
+                              'name': "name", // Seller should provide car name,
+                              'make': makeValue.text,
+                              'model': modelValue.text,
+                              'year': yearValue.text,
+                              'mileage': int.parse(mileageValue.text),
+                              'color': colorValue.text,
+                              'sellerId':
+                                  FirebaseAuth.instance.currentUser!.uid,
+                              'imageURL': jsonEncode(value),
+                              'payment': checkButtonVal(
+                                  paymentButtons, _selectedPayment),
+                              'transmission': checkButtonVal(
+                                  transmissionButtons, _selectedTransmission),
+                              'engine': checkButtonVal(
+                                  engineButtons, _selectedEngine),
+                              'startPrice': int.parse(startPriceValue.text),
+                              'condition': checkButtonVal(
+                                  conditionButtons, _selectedCondition),
+                              'bids': widget.extractedCar!.bids,
+                              'startDate': DateFormat().parse(startDate),
+                              'endDate': DateFormat().parse(endDate),
+                            }).catchError((err) {
+                              return showDialog(
+                                  context: context,
+                                  builder: ((ctx) {
+                                    return AlertDialog(
+                                      title:
+                                          Text("An error occurred in update"),
+                                      content: Text(
+                                        err.toString(),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                isLoading = false;
+                                              });
+                                              Navigator.of(ctx).pop();
+                                            },
+                                            child: Text("Okay"))
+                                      ],
+                                    );
+                                  }));
+                            }).then((_) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/', (route) => false);
+                            });
+                          });
+                        } else {
+                          print("curr user");
+                          print(FirebaseAuth.instance.currentUser);
+                          checkButtonVal(conditionButtons, _selectedCondition);
+                          FirebaseFirestore.instance.collection("cars").add({
                             'name': "name", // Seller should provide car name,
                             'make': makeValue.text,
                             'model': modelValue.text,
@@ -259,15 +336,22 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                             'startPrice': int.parse(startPriceValue.text),
                             'condition': checkButtonVal(
                                 conditionButtons, _selectedCondition),
-                            'bids': widget.extractedCar!.bids,
+                            'bids': Map(),
                             'startDate': DateFormat().parse(startDate),
                             'endDate': DateFormat().parse(endDate),
+                          }).then((documentSnapshot) {
+                            setState(() {
+                              isLoading = false;
+                            });
+
+                            Navigator.of(context)
+                                .pushNamedAndRemoveUntil('/', (route) => false);
                           }).catchError((err) {
                             return showDialog(
                                 context: context,
                                 builder: ((ctx) {
                                   return AlertDialog(
-                                    title: Text("An error occurred in update"),
+                                    title: Text("An error occurred"),
                                     content: Text(
                                       err.toString(),
                                     ),
@@ -283,68 +367,8 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                                     ],
                                   );
                                 }));
-                          }).then((_) {
-                            setState(() {
-                              isLoading = false;
-                            });
-                            Navigator.of(context)
-                                .pushNamedAndRemoveUntil('/', (route) => false);
                           });
-                        });
-                      } else {
-                        print("curr user");
-                        print(FirebaseAuth.instance.currentUser);
-                        checkButtonVal(conditionButtons, _selectedCondition);
-                        FirebaseFirestore.instance.collection("cars").add({
-                          'name': "name", // Seller should provide car name,
-                          'make': makeValue.text,
-                          'model': modelValue.text,
-                          'year': yearValue.text,
-                          'mileage': int.parse(mileageValue.text),
-                          'color': colorValue.text,
-                          'sellerId': FirebaseAuth.instance.currentUser!.uid,
-                          'imageURL': jsonEncode(value),
-                          'payment':
-                              checkButtonVal(paymentButtons, _selectedPayment),
-                          'transmission': checkButtonVal(
-                              transmissionButtons, _selectedTransmission),
-                          'engine':
-                              checkButtonVal(engineButtons, _selectedEngine),
-                          'startPrice': int.parse(startPriceValue.text),
-                          'condition': checkButtonVal(
-                              conditionButtons, _selectedCondition),
-                          'bids': Map(),
-                          'startDate': DateFormat().parse(startDate),
-                          'endDate': DateFormat().parse(endDate),
-                        }).then((documentSnapshot) {
-                          setState(() {
-                            isLoading = false;
-                          });
-
-                          Navigator.of(context)
-                              .pushNamedAndRemoveUntil('/', (route) => false);
-                        }).catchError((err) {
-                          return showDialog(
-                              context: context,
-                              builder: ((ctx) {
-                                return AlertDialog(
-                                  title: Text("An error occurred"),
-                                  content: Text(
-                                    err.toString(),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            isLoading = false;
-                                          });
-                                          Navigator.of(ctx).pop();
-                                        },
-                                        child: Text("Okay"))
-                                  ],
-                                );
-                              }));
-                        });
+                        }
                       }
                     });
                   } else {
@@ -395,7 +419,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: "Make",
-                              errorText: validate(makeValue.text),
+                              // errorText: validate(makeValue.text),
                             ),
                             controller: makeValue,
                           ),
@@ -408,7 +432,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: "Model",
-                              errorText: validate(makeValue.text),
+                              // errorText: validate(modelValue.text),
                             ),
                             controller: modelValue,
                           ),
@@ -421,7 +445,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: "Year",
-                              errorText: validate(makeValue.text),
+                              // errorText: validate(yearValue.text),
                             ),
                             controller: yearValue,
                             keyboardType: TextInputType.number,
@@ -442,7 +466,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: "Mileage",
-                              errorText: validate(makeValue.text),
+                              // errorText: validate(mileageValue.text),
                             ),
                             controller: mileageValue,
                             keyboardType: TextInputType.number,
@@ -459,7 +483,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: "Color",
-                              errorText: validate(makeValue.text),
+                              // errorText: validate(colorValue.text),
                             ),
                             controller: colorValue,
                           ),
@@ -472,7 +496,7 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: "Start Price",
-                              errorText: validate(makeValue.text),
+                              // errorText: validate(startPriceValue.text),
                             ),
                             controller: startPriceValue,
                             keyboardType: TextInputType.number,
