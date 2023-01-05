@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -97,19 +96,19 @@ class _ChatPageState extends State<ChatPage> {
                   height: 15,
                 ),
                 ListTile(
-                  onTap: () async {
-                    Navigator.pop(context);
-                    await availableCameras().then((value) => Navigator.push(
-                            context, MaterialPageRoute(builder: (context) {
-                          return CameraPage(
-                            cameras: value,
-                            chatroom: widget.chat,
-                            currentuser: widget.currentUser,
-                            targetuser: widget.targetuser,
-                            ad: widget.ad,
-                          );
-                        })));
-                  },
+                  // onTap: () async {
+                  //   Navigator.pop(context);
+                  //   await availableCameras().then((value) => Navigator.push(
+                  //           context, MaterialPageRoute(builder: (context) {
+                  //         return CameraPage(
+                  //           cameras: value,
+                  //           chatroom: widget.chat,
+                  //           currentuser: widget.currentUser,
+                  //           targetuser: widget.targetuser,
+                  //           ad: widget.ad,
+                  //         );
+                  //       })));
+                  // },
                   leading: Icon(
                     Icons.camera_alt,
                     color: Colors.white,
