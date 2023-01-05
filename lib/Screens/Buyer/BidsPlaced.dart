@@ -14,34 +14,52 @@ class BidsPlaced extends StatefulWidget {
 class _BidsPlacedState extends State<BidsPlaced> {
   @override
   Widget build(BuildContext context) {
-    String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    String currentUserId = FirebaseAuth.instance.currentUser != null
+        ? FirebaseAuth.instance.currentUser!.uid
+        : "";
     var carInstances = FirebaseFirestore.instance.collection("cars");
     var myStream = carInstances.snapshots();
 
-    return StreamBuilder<QuerySnapshot>(
-      stream: myStream,
-      builder: (ctx, strSnapshot) {
-        if (strSnapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
+    return FirebaseAuth.instance.currentUser != null
+        ? StreamBuilder<QuerySnapshot>(
+            stream: myStream,
+            builder: (ctx, strSnapshot) {
+              if (strSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              var carDocs = strSnapshot.data!.docs;
+              Iterable<Car> carList = carDocs.map((e) =>
+                  Car.constructFromFirebase(e.data() as Map, e.reference.id));
+
+              Iterable<Car> filteredCars =
+                  carList.where((car) => (car.userHasBid(currentUserId)));
+
+              return ListView.builder(
+                itemBuilder: (itemCtx, index) {
+                  Car car = filteredCars.elementAt(index);
+                  return CarCard(car: car);
+                },
+                itemCount: filteredCars.length,
+              );
+            },
+          )
+        : SizedBox(
+            height: 200,
+            child: Container(
+              margin: EdgeInsets.all(20),
+              padding: EdgeInsets.all(20),
+              child: Center(
+                  child: Text(
+                "Sign in to Start",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 30),
+              )),
+            ),
           );
-        }
-
-        var carDocs = strSnapshot.data!.docs;
-        Iterable<Car> carList = carDocs.map(
-            (e) => Car.constructFromFirebase(e.data() as Map, e.reference.id));
-
-        Iterable<Car> filteredCars =
-            carList.where((car) => (car.userHasBid(currentUserId)));
-
-        return ListView.builder(
-          itemBuilder: (itemCtx, index) {
-            Car car = filteredCars.elementAt(index);
-            return CarCard(car: car);
-          },
-          itemCount: filteredCars.length,
-        );
-      },
-    );
   }
 }

@@ -75,15 +75,12 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 children: <Widget>[
                   Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(10),
-                      child: const Text(
-                        'MazadCar',
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 30),
-                      )),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                    ),
+                  ),
                   Container(
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(10),
@@ -170,7 +167,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 50,
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: ElevatedButton(
-                        child: const Text('Register'),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black),
+                        child: const Text(
+                          'Register',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         onPressed: () {
                           signUp();
                         },
@@ -182,7 +184,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       TextButton(
                         child: const Text(
                           'Sign In',
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color.fromARGB(255, 105, 8, 8)),
                         ),
                         onPressed: () {
                           widget.onClickedSignIn();

@@ -40,63 +40,92 @@ class _SavedState extends State<Saved> {
   }
 
   Widget build(BuildContext context) {
-    var savedInstances = FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved");
-    var myStream = savedInstances.snapshots();
+    // if(FirebaseAuth.instance.currentUser!=null)
+    // {
+
+    // }
+    var savedInstances = FirebaseAuth.instance.currentUser != null
+        ? FirebaseFirestore.instance
+            .collection("users")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection("saved")
+        : null;
+    var myStream = FirebaseAuth.instance.currentUser != null
+        ? savedInstances!.snapshots()
+        : null;
 
     return Container(
-      child: StreamBuilder(
-        stream: myStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                ),
-              );
-            } else {
-              QuerySnapshot savedSnapshot = snapshot.data as QuerySnapshot;
-              var savedList = snapshot.data!.docs;
-              // print(chatList);
-              return ListView.builder(
-                padding: EdgeInsets.all(10.0),
-                itemBuilder: (context, index) {
-                  return FutureBuilder(
-                      future: getCarModel(savedList[index].data()["carId"]),
-                      builder: (context, userdata) {
-                        if (userdata.connectionState == ConnectionState.done) {
-                          if (userdata.data != null) {
-                            Car carAD = userdata.data as Car;
+      child: FirebaseAuth.instance.currentUser != null
+          ? StreamBuilder(
+              stream: myStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.active) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                      ),
+                    );
+                  } else {
+                    QuerySnapshot savedSnapshot =
+                        snapshot.data as QuerySnapshot;
+                    var savedList = snapshot.data!.docs;
+                    // print(chatList);
+                    return ListView.builder(
+                      padding: EdgeInsets.all(10.0),
+                      itemBuilder: (context, index) {
+                        return FutureBuilder(
+                            future:
+                                getCarModel(savedList[index].data()["carId"]),
+                            builder: (context, userdata) {
+                              if (userdata.connectionState ==
+                                  ConnectionState.done) {
+                                if (userdata.data != null) {
+                                  Car carAD = userdata.data as Car;
 
-                            return MainCarCard(
-                              car: carAD,
-                              saved: true,
-                            );
-                          } else {
-                            return Text("User data is null");
-                          }
-                        } else {
-                          return Text("");
-                        }
-                      });
-                },
-                itemCount: savedSnapshot.docs.length,
-              );
-            }
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: Colors.black,
+                                  return MainCarCard(
+                                    car: carAD,
+                                    saved: true,
+                                  );
+                                } else {
+                                  return Text("User data is null");
+                                }
+                              } else {
+                                return Text("");
+                              }
+                            });
+                      },
+                      itemCount: savedSnapshot.docs.length,
+                    );
+                  }
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                  );
+                } else {
+                  return Center(
+                      child: Text("Error: Check Internet Connection"));
+                }
+              },
+            )
+          : SizedBox(
+              height: 200,
+              child: Container(
+                margin: EdgeInsets.all(20),
+                padding: EdgeInsets.all(20),
+                child: Center(
+                    child: Text(
+                  "Sign in to Start",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 30),
+                )),
               ),
-            );
-          } else {
-            return Center(child: Text("Error: Check Internet Connection"));
-          }
-        },
-      ),
+            ),
     );
   }
 }

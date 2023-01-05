@@ -20,18 +20,12 @@ class _AvailableCarsState extends State<AvailableCars> {
   Widget build(BuildContext context) {
     final filterProvider = Provider.of<FilterProvider>(context);
 
-    var carInstances = FirebaseFirestore.instance.collection("cars").where(
-        "sellerId",
-        isNotEqualTo: FirebaseAuth.instance.currentUser!.uid);
+    var carInstances = FirebaseAuth.instance.currentUser != null
+        ? FirebaseFirestore.instance.collection("cars").where("sellerId",
+            isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        : FirebaseFirestore.instance.collection("cars");
 
-    var savedInstances = FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("saved");
-
-    print(FirebaseAuth.instance.currentUser!.uid);
     var myStream = carInstances.snapshots();
-    var savedStream = savedInstances.snapshots();
 
     return StreamBuilder<QuerySnapshot>(
       stream: myStream,
@@ -55,11 +49,7 @@ class _AvailableCarsState extends State<AvailableCars> {
             filteredCars = filteredCars
                 .where((car) => (filter['make'] == car.make.toLowerCase()));
           }
-          // if (filter['location'] != null &&
-          //     filter['location'].toString() != 'All') {
-          //   filteredCars = filteredCars.where(
-          //       (car) => (filter['location'] == car.location.toLowerCase()));
-          // }
+
           if (filter['maxMileage'] != null) {
             filteredCars = filteredCars
                 .where((car) => (filter['maxMileage'] >= car.mileage));
@@ -76,11 +66,6 @@ class _AvailableCarsState extends State<AvailableCars> {
         return ListView.builder(
           itemBuilder: (itemCtx, index) {
             Car car = filteredCars.elementAt(index);
-            // var snap = FirebaseFirestore.instance
-            //     .collection('users')
-            //     .doc(FirebaseAuth.instance.currentUser!.uid)
-            //     .collection("saved");
-            // snap.doc()
 
             return MainCarCard(
               car: car,

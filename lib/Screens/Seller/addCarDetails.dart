@@ -14,6 +14,7 @@ import 'package:mazadcar/Models/car.dart';
 import 'package:mazadcar/Screens/Common/myCars.dart';
 import 'package:mazadcar/Screens/tabControllerScreen.dart';
 import 'package:mazadcar/providers/storage.dart';
+import 'package:string_validator/string_validator.dart';
 
 class AddCarDetails extends StatefulWidget {
   List<XFile>? images;
@@ -198,10 +199,6 @@ class _AddCarDetailsState extends State<AddCarDetails> {
           actions: [
             IconButton(
                 onPressed: () {
-                  setState(() {
-                    isLoading = true;
-                  });
-
                   if (FirebaseAuth.instance.currentUser != null) {
                     setState(() {
                       isLoading = true;
@@ -288,6 +285,8 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                           });
                         });
                       } else {
+                        print("curr user");
+                        print(FirebaseAuth.instance.currentUser);
                         checkButtonVal(conditionButtons, _selectedCondition);
                         FirebaseFirestore.instance.collection("cars").add({
                           'name': "name", // Seller should provide car name,
@@ -342,7 +341,22 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                       }
                     });
                   } else {
-                    print("No Authenticated  !!");
+                    showDialog(
+                        context: context,
+                        builder: ((ctx) {
+                          return AlertDialog(
+                            title: Text("Sign in first"),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            '/', (route) => false);
+                                  },
+                                  child: Text("Cancel"))
+                            ],
+                          );
+                        }));
                   }
                 },
                 icon: Icon(
@@ -371,7 +385,13 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         child: Container(
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
-                          child: TextField(
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please fill';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(labelText: "Make"),
                             controller: makeValue,
                           ),
@@ -381,7 +401,13 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         child: Container(
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
-                          child: TextField(
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please fill';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(labelText: "Model"),
                             controller: modelValue,
                           ),
@@ -391,7 +417,13 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         child: Container(
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
-                          child: TextField(
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please fill';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(labelText: "Year"),
                             controller: yearValue,
                           ),
@@ -405,7 +437,13 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         child: Container(
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
-                          child: TextField(
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please fill';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(labelText: "Mileage"),
                             controller: mileageValue,
                           ),
@@ -415,7 +453,13 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         child: Container(
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
-                          child: TextField(
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please fill';
+                              }
+                              return null;
+                            },
                             decoration: InputDecoration(labelText: "Color"),
                             controller: colorValue,
                           ),
@@ -425,7 +469,13 @@ class _AddCarDetailsState extends State<AddCarDetails> {
                         child: Container(
                           padding: EdgeInsets.all(5),
                           margin: EdgeInsets.all(5),
-                          child: TextField(
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please fill';
+                              }
+                              return null;
+                            },
                             decoration:
                                 InputDecoration(labelText: "Start Price"),
                             controller: startPriceValue,

@@ -57,7 +57,7 @@ class Car {
   }
 
   String getCountDown() {
-    Duration diff = DateTime.now().difference(startDate);
+    Duration diff = endDate.difference(startDate);
     if (diff.isNegative) {
       diff = Duration.zero;
     }
