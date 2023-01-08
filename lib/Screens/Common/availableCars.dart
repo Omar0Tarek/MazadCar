@@ -20,19 +20,43 @@ class AvailableCars extends StatefulWidget {
 
 class _AvailableCarsState extends State<AvailableCars> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    final fbm = FirebaseMessaging.instance;
-    fbm.requestPermission();
-    fbm.subscribeToTopic("classChat");
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      Utils.showBlackSnackbar(message.notification?.title ?? "");
-      print(message.data.toString());
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
+  Future<void> saveTokenToDatabase(var fbm) async {
+    String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+    var fcmToken = await fbm.getToken();
+
+    print('fcm token: $fcmToken');
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .update({
+      'tokens': fcmToken,
     });
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((newFcmToken) {
+      FirebaseFirestore.instance.collection('users').doc(currentUserId).update({
+        'tokens': newFcmToken,
+      });
+    });
+  }
+
+  void initState() {
+    super.initState();
+    if (FirebaseAuth.instance.currentUser != null) {
+      final fbm = FirebaseMessaging.instance;
+      fbm.requestPermission();
+
+      saveTokenToDatabase(fbm);
+
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        Utils.showBlackSnackbar(message.notification?.title ?? "");
+        print(message.data.toString());
+        if (message.notification != null) {
+          print(
+              'Message also contained a notification: ${message.notification}');
+        }
+      });
+    }
   }
 
   @override
