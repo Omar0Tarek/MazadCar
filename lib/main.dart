@@ -24,7 +24,6 @@ Future<void> main() async {
 }
 
 Future<void> background_notif_handler(RemoteMessage message) async {
-//await Firebase.initializeApp();
   print("Handling a background message: ${message.data}");
 }
 
